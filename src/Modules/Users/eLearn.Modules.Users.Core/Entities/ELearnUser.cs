@@ -5,7 +5,5 @@ namespace eLearn.Modules.Users.Core.Entities
     internal class ELearnUser : IdentityUser
     {
         public string Locale { get; set; } = "en-GB";
-
-        public string OrgId { get; set; }
     }
 }
