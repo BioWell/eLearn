@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\eLearn.Modules.Coures.Core\eLearn.Modules.Coures.Core.csproj" />
+      <ProjectReference Include="..\eLearn.Modules.Courses.Core\eLearn.Modules.Courses.Core.csproj" />
     </ItemGroup>
 
 </Project>
