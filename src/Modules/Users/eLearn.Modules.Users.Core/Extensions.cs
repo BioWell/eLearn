@@ -19,6 +19,8 @@ namespace eLearn.Modules.Users.Core
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            var registrationOptions = services.GetOptions<RegistrationOptions>("users:registration");
+            services.AddSingleton(registrationOptions);
             services.AddDatabase()
                 .AddScoped<IUserRepository, UserRepository>();
 

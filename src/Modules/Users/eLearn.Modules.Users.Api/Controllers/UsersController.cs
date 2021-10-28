@@ -12,22 +12,6 @@ namespace eLearn.Modules.Users.Api.Controllers
     [ProducesDefaultContentType]
     internal class UsersController: ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public UsersController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        [HttpPost("sign-up")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> SignUpAsync(SignUp command)
-        {
-            await _mediator.Send(command);
-            return NoContent();
-        }
-        
         [HttpGet]
         public ActionResult<string> Get() => Ok("Users module");
     }

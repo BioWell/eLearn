@@ -1,9 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Entities;
-using eLearn.Modules.Users.Core.Persistence;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace eLearn.Modules.Users.Core.Repositories
 {
@@ -15,17 +12,22 @@ namespace eLearn.Modules.Users.Core.Repositories
         {
             _userManager = userManager;
         }
-        
-        public async Task<string> GetUserNameAsync(string userId)
-        {
-            var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
-            return user.UserName;
-        }
 
-        public async Task<string> GetUserEmailAsync(string userId)
+        public async Task<ELearnUser> GetAsync(string email) 
+            => await _userManager.FindByEmailAsync(email);
+
+        public async Task AddAsync(ELearnUser user, string password)
         {
-            var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
-            return user.Email;
+            var result = await _userManager.CreateAsync(user, password);
+            
+            if (result.Succeeded)
+            {
+                //GenerateEmailConfirmationTokenAsync
+            }
+            else
+            {
+                // result.Errors
+            }
         }
     }
 }

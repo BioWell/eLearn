@@ -6,7 +6,7 @@ namespace eLearn.Modules.Users.Core.Repositories
 {
     internal interface IUserRepository
     {
-        Task<string> GetUserNameAsync(string userId);
-        Task<string> GetUserEmailAsync(string email);
+        Task<ELearnUser> GetAsync(string email);
+        Task AddAsync(ELearnUser user, string password);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure.Api;
+using Shared.Infrastructure.Exceptions;
 
 namespace Shared.Infrastructure
 {
@@ -10,6 +11,7 @@ namespace Shared.Infrastructure
     {
         public static IServiceCollection AddModularInfrastructure(this IServiceCollection services)
         {
+            services.AddErrorHandling();
             services.AddControllers()
                 .ConfigureApplicationPartManager(manager =>
                 {
@@ -22,7 +24,7 @@ namespace Shared.Infrastructure
 
         public static WebApplication UseModularInfrastructure(this WebApplication app)
         {
-            // app.UseHttpsRedirection();
+            app.UseErrorHandling();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
