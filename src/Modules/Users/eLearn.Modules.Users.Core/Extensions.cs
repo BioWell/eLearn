@@ -35,7 +35,15 @@ namespace eLearn.Modules.Users.Core
                 optionsBuilder.UseSqlServer(options.ConnectionString);
             });
 
-            services.AddIdentity<ELearnUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 4;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequiredUniqueChars = 0;
+                })
                 .AddEntityFrameworkStores<UsersDbContext>();
 
             return services;

@@ -42,11 +42,12 @@ namespace eLearn.Modules.Users.Core.Commands.Handlers
                 throw new EmailInUseException();
             }
             
-            user = new ELearnUser
+            user = new User
             {
-                Id = Guid.NewGuid().ToString(),
+                // Id = Guid.NewGuid().ToString(),
                 UserName = command.Email,
                 Email = command.Email,
+                FullName = command.FullName
             };
 
             await _userRepository.AddAsync(user, command.Password);

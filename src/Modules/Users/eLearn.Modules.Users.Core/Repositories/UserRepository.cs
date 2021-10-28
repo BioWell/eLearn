@@ -6,27 +6,30 @@ namespace eLearn.Modules.Users.Core.Repositories
 {
     internal class UserRepository : IUserRepository
     {
-        private readonly UserManager<ELearnUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public UserRepository(UserManager<ELearnUser> userManager)
+        public UserRepository(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<ELearnUser> GetAsync(string email) 
+        public async Task<User> GetAsync(string email)
             => await _userManager.FindByEmailAsync(email);
 
-        public async Task AddAsync(ELearnUser user, string password)
+        public async Task AddAsync(User user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
-            
+
             if (result.Succeeded)
             {
                 //GenerateEmailConfirmationTokenAsync
+                //await _userManager.AddToRoleAsync(user, "customer");
+                //await _signInManager.SignInAsync(user, isPersistent: false);
+                //_logger.LogInformation(3, "User created a new account with password.");
             }
             else
             {
-                // result.Errors
+                // _logger.LogInformation(3, @"{result.Errors}");
             }
         }
     }

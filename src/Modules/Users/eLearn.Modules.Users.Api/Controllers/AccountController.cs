@@ -23,5 +23,17 @@ namespace eLearn.Modules.Users.Api.Controllers
             await _mediator.Send(command);
             return NoContent();
         }
+        
+        // [HttpPost("sign-in")]
+        // [ProducesResponseType(StatusCodes.Status204NoContent)]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // public async Task<ActionResult<UserDetailsDto>> SignInAsync(SignIn command)
+        // {
+        //     // await _dispatcher.SendAsync(command.Bind(x => x.Id, Guid.NewGuid()));
+        //     // var jwt = _userRequestStorage.GetToken(command.Id);
+        //     // var user = await _dispatcher.QueryAsync(new GetUser {UserId = jwt.UserId});
+        //     // AddCookie(AccessTokenCookie, jwt.AccessToken);
+        //     return Ok(user);
+        // }
     }
 }
