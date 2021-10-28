@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure.Api;
 
@@ -9,8 +10,6 @@ namespace Shared.Infrastructure
     {
         public static IServiceCollection AddModularInfrastructure(this IServiceCollection services)
         {
-            //...AddModules
-            
             services.AddControllers()
                 .ConfigureApplicationPartManager(manager =>
                 {
@@ -21,10 +20,8 @@ namespace Shared.Infrastructure
             return services;
         }
 
-        public static IApplicationBuilder UseModularInfrastructure(this WebApplication app)
+        public static WebApplication UseModularInfrastructure(this WebApplication app)
         {
-            ////...UseModules
-            
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
@@ -34,6 +31,20 @@ namespace Shared.Infrastructure
                 endpoints.MapGet("/", context => context.Response.WriteAsync("eLearn API"));
             });
             return app;
+        }
+        
+        public static T GetOptions<T>(this IServiceCollection services, string sectionName) where T : new()
+        {
+            using var serviceProvider = services.BuildServiceProvider();
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            return configuration.GetOptions<T>(sectionName);
+        }
+
+        public static T GetOptions<T>(this IConfiguration configuration, string sectionName) where T : new()
+        {
+            var options = new T();
+            configuration.GetSection(sectionName).Bind(options);
+            return options;
         }
     }
 }

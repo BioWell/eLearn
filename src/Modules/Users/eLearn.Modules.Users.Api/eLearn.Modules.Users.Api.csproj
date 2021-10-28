@@ -10,4 +10,16 @@
       <ProjectReference Include="..\eLearn.Modules.Users.Core\eLearn.Modules.Users.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="module.users.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="module.users.development.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="module.users.local.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

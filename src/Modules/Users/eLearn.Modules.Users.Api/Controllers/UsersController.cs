@@ -29,18 +29,6 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpGet]
-        public ActionResult<string> Get() => Ok("Users module"); 
-        
-        // public async Task<IActionResult> GetAllAsync()
-        // {
-        //     var brands = await _mediator.Send(new GetAllBrandsQuery());
-        //     return Ok(brands);
-        // }
-        //
-        // [HttpPost]
-        // public async Task<IActionResult> RegisterAsync(RegisterBrandCommand command)
-        // {
-        //     return Ok(await _mediator.Send(command));
-        // }
+        public ActionResult<string> Get() => Ok("Users module");
     }
 }

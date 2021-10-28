@@ -17,7 +17,6 @@ namespace eLearn.Modules.Users.Core.Commands.Handlers
 
         public async Task<int> Handle(SignUp request, CancellationToken cancellationToken= default)
         {
-            // _logger.LogInformation($"User with Email: '{SignUp.Email}' has signed up.");
             await Task.CompletedTask;
             return 1;
         }

@@ -1,8 +1,14 @@
-﻿using eLearn.Modules.Users.Core.Entities;
+﻿using System.Runtime.CompilerServices;
+using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Persistence;
 using eLearn.Modules.Users.Core.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Infrastructure;
+using Shared.Infrastructure.Persistence.SqlServer;
+
+[assembly: InternalsVisibleTo("eLearn.Modules.Users.Api")]
 
 namespace eLearn.Modules.Users.Core
 {
@@ -10,8 +16,21 @@ namespace eLearn.Modules.Users.Core
     {
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>()
-                .AddIdentity<ELearnUser, IdentityRole>()
+            AddDatabase(services);
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            return services;
+        }       
+        
+        public static IServiceCollection AddDatabase(this IServiceCollection services)
+        {
+            var options = services.GetOptions<SqlserverOptions>("sqlserver");
+            services.AddDbContext<UsersDbContext>(optionsBuilder =>
+            {
+                optionsBuilder.UseSqlServer(options.ConnectionString);
+            });
+            
+            services.AddIdentity<ELearnUser, IdentityRole>()
                 .AddEntityFrameworkStores<UsersDbContext>();
 
             return services;
