@@ -5,7 +5,9 @@ using Shared.Infrastructure;
 using Shared.Infrastructure.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
-IList<Assembly> assemblies = ModuleLoader.LoadAssemblies(builder.Configuration, "Modular.Modules.");
+builder.AddModulesConfiguraion();
+
+IList<Assembly> assemblies = ModuleLoader.LoadAssemblies(builder.Configuration, "eLearn.Modules.");
 IList<IModule> modules =ModuleLoader.LoadModules(assemblies);
 ConfigureService();
 var app = builder.Build();
@@ -14,6 +16,7 @@ app.Run();
 
 void ConfigureService()
 {
+
     builder.Services.AddModularInfrastructure();
     foreach (var module in modules)
     {

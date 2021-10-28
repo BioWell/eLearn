@@ -22,7 +22,7 @@ namespace Shared.Infrastructure
 
         public static WebApplication UseModularInfrastructure(this WebApplication app)
         {
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
