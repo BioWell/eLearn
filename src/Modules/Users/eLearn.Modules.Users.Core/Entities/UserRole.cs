@@ -6,10 +6,10 @@ namespace eLearn.Modules.Users.Core.Entities
     {
         public override long UserId { get; set; }
 
-        public User User { get; set; } = null!;
+        public virtual User User { get; set; } = new User();
 
         public override long RoleId { get; set; }
 
-        public Role Role { get; set; } = null!;
+        public virtual Role Role { get; set; } = new Role();
     }
 }

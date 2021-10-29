@@ -5,11 +5,8 @@ namespace eLearn.Modules.Users.Core.Entities
 {
     internal class Country : EntityBaseWithTypedId<string>
     {
-        public Country(string id)
-        {
-            Id = id;
-        }
-
+        public Country() { }
+        public Country(string id) => Id = id;
         public string Name { get; set; } = null!;
         public string Code3 { get; set; } = null!;
         public bool IsBillingEnabled { get; set; }

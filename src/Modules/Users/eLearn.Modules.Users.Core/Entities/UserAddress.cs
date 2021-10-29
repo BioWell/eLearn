@@ -6,15 +6,12 @@ namespace eLearn.Modules.Users.Core.Entities
     internal class UserAddress : EntityBase
     {
         public long UserId { get; set; }
-
-        public User User { get; set; } = null!;
+        public virtual User User { get; set; } = new User();
 
         public long AddressId { get; set; }
-
-        public Address Address { get; set; } = null!;
-
+        public virtual Address Address { get; set; } = new Address();
+        
         public AddressType AddressType { get; set; }
-
-        public DateTimeOffset? LastUsedOn { get; set; } = null!;
+        public DateTimeOffset? LastUsedOn { get; set; } 
     }
 }

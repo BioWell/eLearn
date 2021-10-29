@@ -12,11 +12,12 @@ IList<IModule> modules =ModuleLoader.LoadModules(assemblies);
 ConfigureService();
 var app = builder.Build();
 Configure();
+assemblies.Clear();
+modules.Clear();
 app.Run();
 
 void ConfigureService()
 {
-
     builder.Services.AddModularInfrastructure();
     foreach (var module in modules)
     {

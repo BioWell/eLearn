@@ -27,7 +27,7 @@ namespace eLearn.Modules.Users.Core
             return services;
         }
 
-        public static IServiceCollection AddDatabase(this IServiceCollection services)
+        private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
             var options = services.GetOptions<SqlserverOptions>("sqlserver");
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
@@ -35,14 +35,14 @@ namespace eLearn.Modules.Users.Core
                 optionsBuilder.UseSqlServer(options.ConnectionString);
             });
 
-            services.AddIdentity<User, IdentityRole>(options =>
+            services.AddIdentity<User, Role>(identityOptions =>
                 {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredLength = 4;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequiredUniqueChars = 0;
+                    identityOptions.Password.RequireDigit = false;
+                    identityOptions.Password.RequiredLength = 4;
+                    identityOptions.Password.RequireNonAlphanumeric = false;
+                    identityOptions.Password.RequireUppercase = false;
+                    identityOptions.Password.RequireLowercase = false;
+                    identityOptions.Password.RequiredUniqueChars = 0;
                 })
                 .AddEntityFrameworkStores<UsersDbContext>();
 

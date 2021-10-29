@@ -21,10 +21,13 @@ namespace eLearn.Modules.Users.Core.Entities
         public DateTimeOffset CreatedOn { get; set; } 
         public DateTimeOffset LatestUpdatedOn { get; set; } 
         public IList<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
-        public UserAddress DefaultShippingAddress { get; set; } = null!;
+        
         public long? DefaultShippingAddressId { get; set; }
-        public UserAddress DefaultBillingAddress { get; set; } = null!;
+        public virtual UserAddress DefaultShippingAddress { get; set; } = new UserAddress();
+        
         public long? DefaultBillingAddressId { get; set; }
+        public virtual UserAddress DefaultBillingAddress { get; set; } = new UserAddress();
+        
         public string RefreshTokenHash { get; set; } = null!;
         public IList<UserRole> Roles { get; set; } = new List<UserRole>();
         public string Culture { get; set; } = null!;
