@@ -9,12 +9,12 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
         public void Configure(EntityTypeBuilder<District> builder)
         {
             builder.Property(e => e.Type).HasMaxLength(450);
-            builder.Property(e => e.Name).HasMaxLength(450).IsRequired();
+            builder.Property(e => e.Name).HasMaxLength(450);//.IsRequired();
 
             builder.HasOne(o => o.StateOrProvince)
                 .WithMany()
                 .HasForeignKey(f => f.StateOrProvinceId)
-                .IsRequired()
+                //.IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.ToTable("Core_District");

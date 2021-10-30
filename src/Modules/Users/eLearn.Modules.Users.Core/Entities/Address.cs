@@ -18,11 +18,11 @@ namespace eLearn.Modules.Users.Core.Entities
         public string? ZipCode { get; set; }
 
         public long? DistrictId { get; set; }
-        public virtual District District { get; set; } = new District();
+        public virtual District? District { get; set; }
         public long StateOrProvinceId { get; set; }
-        public virtual StateOrProvince StateOrProvince { get; set; } = new StateOrProvince();
-        public string CountryId { get; set; } = "US";
-        public virtual Country Country { get; set; } = new Country();
-        public virtual IList<UserAddress> Users { get; set; } = new List<UserAddress>();
+        public virtual StateOrProvince? StateOrProvince { get; set; }
+        public string? CountryId { get; set; }
+        public virtual Country? Country { get; set; }
+        public virtual IList<UserAddress>? Users { get; set; }
     }
 }

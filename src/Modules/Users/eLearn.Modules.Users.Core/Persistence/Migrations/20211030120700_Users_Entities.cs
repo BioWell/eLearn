@@ -14,7 +14,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Code3 = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     IsBillingEnabled = table.Column<bool>(type: "bit", nullable: false),
                     IsShippingEnabled = table.Column<bool>(type: "bit", nullable: false),
@@ -50,7 +50,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     CountryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -92,7 +92,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Type = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StateOrProvinceId = table.Column<long>(type: "bigint", nullable: false)
@@ -120,9 +120,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     AddressLine2 = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     City = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     ZipCode = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    DistrictId = table.Column<long>(type: "bigint", nullable: false),
+                    DistrictId = table.Column<long>(type: "bigint", nullable: true),
                     StateOrProvinceId = table.Column<long>(type: "bigint", nullable: false),
-                    CountryId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CountryId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {

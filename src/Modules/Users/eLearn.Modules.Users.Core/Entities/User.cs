@@ -27,9 +27,9 @@ namespace eLearn.Modules.Users.Core.Entities
         public virtual IList<UserAddress> Addresses { get; set; } = new List<UserAddress>();
 
         public long? DefaultShippingAddressId { get; set; }
-        public virtual UserAddress DefaultShippingAddress { get; set; } = new UserAddress();
+        public virtual UserAddress? DefaultShippingAddress { get; set; }
         
         public long? DefaultBillingAddressId { get; set; }
-        public virtual UserAddress DefaultBillingAddress { get; set; } = new UserAddress();
+        public virtual UserAddress? DefaultBillingAddress { get; set; }
     }
 }

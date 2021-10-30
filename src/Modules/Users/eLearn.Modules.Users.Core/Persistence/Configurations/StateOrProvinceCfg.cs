@@ -10,7 +10,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
         {
             builder.Property(e => e.Code).HasMaxLength(450);
             builder.Property(e => e.Type).HasMaxLength(450);
-            builder.Property(e => e.Name).HasMaxLength(450).IsRequired();
+            builder.Property(e => e.Name).HasMaxLength(450);//.IsRequired();
             
             builder.ToTable("Core_StateOrProvince");
         }

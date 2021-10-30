@@ -9,7 +9,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Country> builder)
         {
             builder.Property(e => e.Code3).HasMaxLength(450);
-            builder.Property(e => e.Name).HasMaxLength(450).IsRequired();
+            builder.Property(e => e.Name).HasMaxLength(450);//.IsRequired();
 
             builder.HasMany(e => e.StatesOrProvinces)
                 .WithOne(e => e.Country)

@@ -9,7 +9,7 @@ namespace eLearn.Modules.Users.Core.Entities
         }
 
         public District(long id) => Id = id;
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; }
         public string? Type { get; set; }
         public string? Location { get; set; }
         public long StateOrProvinceId { get; set; }

@@ -23,19 +23,16 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
             builder.HasOne(o => o.Country)
                 .WithMany()
                 .HasForeignKey(f => f.CountryId)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
             
             builder.HasOne(o => o.StateOrProvince)
                 .WithMany()
                 .HasForeignKey(f => f.StateOrProvinceId)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
             
             builder.HasOne(o => o.District)
                 .WithMany()
                 .HasForeignKey(f => f.DistrictId)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.ToTable("Core_Address");

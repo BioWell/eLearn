@@ -12,7 +12,7 @@ using eLearn.Modules.Users.Core.Persistence;
 namespace eLearn.Modules.Users.Core.Persistence.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20211030105947_Users_Entities")]
+    [Migration("20211030120700_Users_Entities")]
     partial class Users_Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,11 +49,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CountryId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<long?>("DistrictId")
-                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<string>("Phone")
@@ -103,7 +101,6 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
@@ -127,7 +124,6 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
@@ -192,7 +188,6 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
@@ -451,14 +446,12 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.HasOne("eLearn.Modules.Users.Core.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("eLearn.Modules.Users.Core.Entities.District", "District")
                         .WithMany()
                         .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("eLearn.Modules.Users.Core.Entities.StateOrProvince", "StateOrProvince")
                         .WithMany()
