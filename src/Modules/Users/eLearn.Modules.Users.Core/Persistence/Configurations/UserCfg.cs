@@ -11,27 +11,26 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
             builder.Property(x => x.Culture).HasMaxLength(450);
             builder.Property(x => x.RefreshTokenHash).HasMaxLength(450);
             builder.Property(x => x.FullName).IsRequired().HasMaxLength(450);
-            
-            builder.HasMany(e => e.Roles)
-                .WithOne(e => e.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
 
-            builder.HasMany(e => e.UserAddresses)
-                .WithOne(e => e.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
+            builder.HasMany(x => x.Roles)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
+            builder.HasMany(x => x.Addresses)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
             
+            builder.HasOne(x => x.DefaultShippingAddress)
+                .WithMany()
+                .HasForeignKey(x => x.DefaultShippingAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.HasOne(x => x.DefaultBillingAddress)
+                .WithMany()
+                .HasForeignKey(x => x.DefaultBillingAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.ToTable("Core_User");
-            
-            // builder.HasOne(x => x.DefaultShippingAddress)
-            //     .with(x => x.DefaultBillingAddressId)
-            //     .OnDelete(DeleteBehavior.Restrict);
-
-            // builder.HasOne(x => x.DefaultBillingAddress)
-            //     .WithMany()
-            //     .HasForeignKey(x => x.DefaultBillingAddressId)
-            //     .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace eLearn.Modules.Users.Core.Entities
 {
     internal class Role : IdentityRole<long>, IEntityWithTypedId<long>
     {
-        public virtual IList<UserRole> UserRoles { get; set; } = new List<UserRole>();
+        public virtual IList<UserRole> Users { get; set; } = new List<UserRole>();
     }
 }

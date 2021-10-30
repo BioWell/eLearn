@@ -9,10 +9,10 @@ namespace eLearn.Modules.Users.Core.Entities
         }
 
         public StateOrProvince(long id) => Id = id;
-        public string Code { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string CountryId { get; set; } = string.Empty;
+        public string? Code { get; set; }
+        public string Name { get; set; } = "Washington";
+        public string? Type { get; set; }
+        public string CountryId { get; set; } = "US";
         public virtual Country Country { get; set; } = new Country();
     }
 }

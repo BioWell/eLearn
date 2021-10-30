@@ -10,8 +10,8 @@ namespace eLearn.Modules.Users.Core.Entities
 
         public District(long id) => Id = id;
         public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string Location { get; set; } = string.Empty;
+        public string? Type { get; set; }
+        public string? Location { get; set; }
         public long StateOrProvinceId { get; set; }
         public virtual StateOrProvince StateOrProvince { get; set; } = new StateOrProvince();
     }
