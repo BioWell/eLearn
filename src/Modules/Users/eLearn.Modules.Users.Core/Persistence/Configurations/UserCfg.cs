@@ -8,28 +8,29 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
             builder.Property(x => x.Culture).HasMaxLength(450);
             builder.Property(x => x.RefreshTokenHash).HasMaxLength(450);
             builder.Property(x => x.FullName).IsRequired().HasMaxLength(450);
+            
+            builder.HasMany(e => e.Roles)
+                .WithOne(e => e.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
 
-            // builder.Property(x => x.ConcurrencyStamp).IsConcurrencyToken();
-            // builder.Property(x => x.Email).HasMaxLength(256);
-            // builder.HasIndex(x => x.NormalizedEmail).IsUnique().HasDatabaseName("UserNameIndex")
-            //     .HasFilter("[NormalizedUserName] IS NOT NULL");
-            // builder.Property(x => x.NormalizedEmail).HasMaxLength(256);
-            // builder.Property(x => x.NormalizedUserName).HasMaxLength(256);
-            // builder.Property(x => x.UserName).HasMaxLength(256);
-
-            // builder.HasOne(d => d.DefaultBillingAddress)
-            //     .WithMany()
-            //     .HasForeignKey(f => f.DefaultBillingAddressId)
+            builder.HasMany(e => e.UserAddresses)
+                .WithOne(e => e.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+            
+            builder.ToTable("Core_User");
+            
+            // builder.HasOne(x => x.DefaultShippingAddress)
+            //     .with(x => x.DefaultBillingAddressId)
             //     .OnDelete(DeleteBehavior.Restrict);
-            // builder.HasOne(d => d.DefaultShippingAddress)
+
+            // builder.HasOne(x => x.DefaultBillingAddress)
             //     .WithMany()
-            //     .HasForeignKey(f => f.DefaultShippingAddressId)
+            //     .HasForeignKey(x => x.DefaultBillingAddressId)
             //     .OnDelete(DeleteBehavior.Restrict);
         }
     }
