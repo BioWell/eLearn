@@ -4,18 +4,10 @@ using Shared.Infrastructure.Api;
 namespace eLearn.Modules.Users.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route(BasePath + "/[controller]")]
     [ProducesDefaultContentType]
-    internal abstract class BaseController : ControllerBase
+    internal abstract class BaseController : CommonBaseController
     {
-        protected ActionResult<T> OkOrNotFound<T>(T model)
-        {
-            if (model is not null)
-            {
-                return Ok(model);
-            }
-
-            return NotFound();
-        }
+        protected internal new const string BasePath = CommonBaseController.BasePath + "/identity";
     }
 }

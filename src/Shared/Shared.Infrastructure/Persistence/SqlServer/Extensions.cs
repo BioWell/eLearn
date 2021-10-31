@@ -6,17 +6,10 @@ namespace Shared.Infrastructure.Persistence.SqlServer
     {
         public static IServiceCollection AddPostgres(this IServiceCollection services)
         {
-            var options = services.GetOptions<SqlserverOptions>("sqlserver");
+            var options = services.GetOptions<SqlserverOptions>(nameof(SqlserverOptions));
             services.AddSingleton(options);
             return services;
         }
         
-        // public static IServiceCollection AddPostgres<T>(this IServiceCollection services) where T : DbContext
-        // {
-        //     var options = services.GetOptions<SqlserverOptions>("postgres");
-        //     services.AddDbContext<T>(x => x.UseNpgsql(options.ConnectionString));
-        //
-        //     return services;
-        // }
     }
 }

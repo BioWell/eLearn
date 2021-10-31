@@ -1,73 +1,75 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Persistence
 {
     internal class UsersDbContext : IdentityDbContext<AppUser, AppRole, long,
         IdentityUserClaim<long>, AppUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>
     {
+        internal string Schema => "Users";
+        
         public UsersDbContext(DbContextOptions options) : base(options)
         {
         }
-
-        // public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        // {
-        //     ValidateEntities();
-        //     return base.SaveChanges(acceptAllChangesOnSuccess);
-        // }
-        //
-        // public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-        //     CancellationToken cancellationToken = default(CancellationToken))
-        // {
-        //     ValidateEntities();
-        //     return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        // }
-
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.HasDefaultSchema(Schema);
             base.OnModelCreating(builder);
+            // builder.ApplyConfiguration(new AppUserCfg());
+            // ...
+            //
             builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
             SeedData(builder);
         }
 
-        public void SeedData(ModelBuilder builder)
+        private void SeedData(ModelBuilder builder)
         {
             builder.Entity<AppRole>().HasData(
                 new AppRole
                 {
                     Id = 1L,
                     ConcurrencyStamp = "4776a1b2-dbe4-4056-82ec-8bed211d1454",
-                    Name = "admin",
-                    NormalizedName = "ADMIN"
+                    Name = "SuperAdmin",
+                    NormalizedName = "SUPERADMIN"
                 },
                 new AppRole
                 {
                     Id = 2L,
                     ConcurrencyStamp = "00d172be-03a0-4856-8b12-26d63fcf4374",
-                    Name = "students",
-                    NormalizedName = "STUDENTS"
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
                 },
                 new AppRole
                 {
                     Id = 3L,
-                    ConcurrencyStamp = "d4754388-8355-4018-b728-218018836817",
-                    Name = "guest",
-                    NormalizedName = "GUEST"
+                    ConcurrencyStamp = "00d172be-03a0-4856-8b12-26d645cf4374",
+                    Name = "Students",
+                    NormalizedName = "STUDENTS"
                 },
                 new AppRole
                 {
                     Id = 4L,
                     ConcurrencyStamp = "d4754388-8355-4018-b728-218018836817",
-                    Name = "teacher",
+                    Name = "Guest",
+                    NormalizedName = "GUEST"
+                },
+                new AppRole
+                {
+                    Id = 5L,
+                    ConcurrencyStamp = "d4754388-8355-4018-b728-218018896817",
+                    Name = "Teacher",
                     NormalizedName = "TEACHER"
+                },
+                new AppRole
+                {
+                    Id = 6L,
+                    ConcurrencyStamp = "d4754388-8355-4018-b728-218338836817",
+                    Name = "Staff",
+                    NormalizedName = "STAFF"
                 }
             );
 
@@ -164,23 +166,5 @@ namespace eLearn.Modules.Users.Core.Persistence
                 new Address(1) {AddressLine1 = "李冰路 43号", ContactName = "杨志龙", CountryId = "CN", StateOrProvinceId = 1}
             );
         }
-
-        // private void ValidateEntities()
-        // {
-        //     var modifiedEntries = ChangeTracker.Entries()
-        //         .Where(x => (x.State == EntityState.Added || x.State == EntityState.Modified));
-        //
-        //     foreach (var entity in modifiedEntries)
-        //     {
-        //         if (entity.Entity is ValidatableObject validatableObject)
-        //         {
-        //             var validationResults = validatableObject.Validate();
-        //             if (validationResults.Any())
-        //             {
-        //                 //throw new ValidationException((string)entity.Entity.GetType(), validationResults);
-        //             }
-        //         }
-        //     }
-        // }
     }
 }

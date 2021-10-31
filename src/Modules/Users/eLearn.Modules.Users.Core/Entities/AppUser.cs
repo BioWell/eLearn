@@ -24,6 +24,8 @@ namespace eLearn.Modules.Users.Core.Entities
         public DateTimeOffset LatestUpdatedOn { get; set; }
         public long? VendorId { get; set; }
         public bool IsDeleted { get; set; }
+
+        public string ImageUrl { get; set; } = string.Empty;
         
         public virtual IList<AppUserRole>? UserRoles { get; set; }
         

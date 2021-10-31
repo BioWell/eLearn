@@ -10,6 +10,8 @@ namespace eLearn.Modules.Users.Core.Commands
         [Display(Name = "Email")]
         public string Email { get; set; } = string.Empty;
         
+        public bool EmailConfirmed { get; set; }
+        
         [Required(ErrorMessage = "The {0} field is required.")]
         [Display(Name = "Name")]
         public string FullName { get; set; } = string.Empty;
@@ -25,8 +27,10 @@ namespace eLearn.Modules.Users.Core.Commands
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-        // public string CallbackUrl { get; set; } = string.Empty;
-        
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        public bool PhoneNumberConfirmed { get; set; }
+
         public string? Role { get; set; }
     }
 }

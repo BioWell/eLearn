@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure.Api;
 using Shared.Infrastructure.Exceptions;
+using Shared.Infrastructure.Services.Email;
 
 namespace Shared.Infrastructure
 {
@@ -17,7 +18,7 @@ namespace Shared.Infrastructure
                 {
                     manager.FeatureProviders.Add(new InternalControllerFeatureProvider());
                 });
-
+            services.AddApplicationLayer();
             services.AddEndpointsApiExplorer();
             return services;
         }
@@ -47,6 +48,15 @@ namespace Shared.Infrastructure
             var options = new T();
             configuration.GetSection(sectionName).Bind(options);
             return options;
+        }
+
+        private static IServiceCollection AddApplicationLayer(this IServiceCollection services)
+        {
+            var options = services.GetOptions<MailSettings>(nameof(MailSettings));
+            
+            services.AddTransient<IMailService, SmtpMailService>();
+            services.AddSingleton(options);
+            return services;
         }
     }
 }

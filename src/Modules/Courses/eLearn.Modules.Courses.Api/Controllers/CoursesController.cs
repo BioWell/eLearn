@@ -2,6 +2,7 @@
 
 namespace eLearn.Modules.Courses.Api.Controllers
 {
+    [Route(BasePath)]
     internal class CoursesController: BaseController
     {
         [HttpGet]

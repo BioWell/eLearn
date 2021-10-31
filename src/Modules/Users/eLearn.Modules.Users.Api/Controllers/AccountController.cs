@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eLearn.Modules.Users.Api.Controllers
 {
+    [Route(BasePath)]
     internal class AccountController : BaseController
     {
         private readonly IMediator _mediator;

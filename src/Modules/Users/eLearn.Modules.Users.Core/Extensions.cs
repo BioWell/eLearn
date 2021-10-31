@@ -28,7 +28,7 @@ namespace eLearn.Modules.Users.Core
 
         private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            var options = services.GetOptions<SqlserverOptions>("sqlserver");
+            var options = services.GetOptions<SqlserverOptions>(nameof(SqlserverOptions));
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
             {
                 optionsBuilder.EnableSensitiveDataLogging(true);
