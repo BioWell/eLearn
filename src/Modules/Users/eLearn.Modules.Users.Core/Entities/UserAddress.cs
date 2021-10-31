@@ -8,8 +8,8 @@ namespace eLearn.Modules.Users.Core.Entities
         public AddressType AddressType { get; set; }
         public DateTimeOffset? LastUsedOn { get; set; }
         public long UserId { get; set; }
-        public virtual User User { get; set; } = new User();
+        public virtual AppUser? User { get; set; }
         public long AddressId { get; set; }
-        public virtual Address Address { get; set; } = new Address();
+        public virtual Address? Address { get; set; }
     }
 }

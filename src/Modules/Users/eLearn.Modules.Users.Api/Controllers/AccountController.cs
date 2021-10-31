@@ -31,9 +31,9 @@ namespace eLearn.Modules.Users.Api.Controllers
         // {
         //     // await _dispatcher.SendAsync(command.Bind(x => x.Id, Guid.NewGuid()));
         //     // var jwt = _userRequestStorage.GetToken(command.Id);
-        //     // var user = await _dispatcher.QueryAsync(new GetUser {UserId = jwt.UserId});
+        //     // var appUser = await _dispatcher.QueryAsync(new GetUser {UserId = jwt.UserId});
         //     // AddCookie(AccessTokenCookie, jwt.AccessToken);
-        //     return Ok(user);
+        //     return Ok(appUser);
         // }
     }
 }

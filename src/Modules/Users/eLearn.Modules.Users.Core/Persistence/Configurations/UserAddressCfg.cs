@@ -16,7 +16,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
                 .WithMany(x => x.Addresses)
                 .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-
+            
             builder.ToTable("Core_UserAddress");
         }
     }

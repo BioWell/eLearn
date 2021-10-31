@@ -10,12 +10,12 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
         {
             builder.Property(e => e.Code3).HasMaxLength(450);
             builder.Property(e => e.Name).HasMaxLength(450);//.IsRequired();
-
+            
             builder.HasMany(e => e.StatesOrProvinces)
                 .WithOne(e => e.Country)
                 .HasForeignKey(ur => ur.CountryId)
                 .OnDelete(DeleteBehavior.Restrict);
-
+            
             builder.ToTable("Core_Country");
         }
     }

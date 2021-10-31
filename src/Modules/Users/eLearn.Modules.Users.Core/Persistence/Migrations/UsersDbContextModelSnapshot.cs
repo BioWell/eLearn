@@ -47,11 +47,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CountryId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<long?>("DistrictId")
-                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<string>("Phone")
@@ -74,76 +72,19 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.HasIndex("StateOrProvinceId");
 
                     b.ToTable("Core_Address", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            AddressLine1 = "李冰路 43号",
+                            ContactName = "杨志龙",
+                            CountryId = "CN",
+                            StateOrProvinceId = 1L
+                        });
                 });
 
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.Country", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Code3")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsBillingEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsCityEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDistrictEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsShippingEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsZipCodeEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<long>("StateOrProvinceId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Core_Country", (string)null);
-                });
-
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.District", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<long>("StateOrProvinceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StateOrProvinceId");
-
-                    b.ToTable("Core_District", (string)null);
-                });
-
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.Role", b =>
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.AppRole", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,41 +112,39 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Core_Role", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            ConcurrencyStamp = "4776a1b2-dbe4-4056-82ec-8bed211d1454",
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            ConcurrencyStamp = "00d172be-03a0-4856-8b12-26d63fcf4374",
+                            Name = "students",
+                            NormalizedName = "STUDENTS"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            ConcurrencyStamp = "d4754388-8355-4018-b728-218018836817",
+                            Name = "guest",
+                            NormalizedName = "GUEST"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            ConcurrencyStamp = "d4754388-8355-4018-b728-218018836817",
+                            Name = "teacher",
+                            NormalizedName = "TEACHER"
+                        });
                 });
 
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.StateOrProvince", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("Core_StateOrProvince", (string)null);
-                });
-
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.User", b =>
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.AppUser", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,12 +165,6 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.Property<string>("Culture")
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<long?>("DefaultBillingAddressId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DefaultShippingAddressId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -288,6 +221,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -296,10 +232,6 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DefaultBillingAddressId");
-
-                    b.HasIndex("DefaultShippingAddressId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -310,6 +242,231 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Core_User", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "101cd6ae-a8ef-4a37-97fd-04ac2dd630e4",
+                            CreatedOn = new DateTimeOffset(new DateTime(2021, 10, 31, 4, 33, 39, 189, DateTimeKind.Unspecified), new TimeSpan(0, 7, 0, 0, 0)),
+                            Email = "system@biowellacademy.com",
+                            EmailConfirmed = false,
+                            ExtensionData = "",
+                            FullName = "System User",
+                            IsDeleted = true,
+                            LatestUpdatedOn = new DateTimeOffset(new DateTime(2018, 5, 29, 4, 33, 39, 189, DateTimeKind.Unspecified), new TimeSpan(0, 7, 0, 0, 0)),
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SYSTEM@BIOWELLACADEMY.COM",
+                            NormalizedUserName = "SYSTEM@BIOWELLACADEMY.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAEqSCV8Bpg69irmeg8N86U503jGEAYf75fBuzvL00/mr/FGEsiUqfR0rWBbBUwqtw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a9565acb-cee6-425f-9833-419a793f5fba",
+                            TwoFactorEnabled = false,
+                            UserGuid = new Guid("5f72f83b-7436-4221-869c-1b69b2e23aae"),
+                            UserName = "system@simplcommerce.com"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c83afcbc-312c-4589-bad7-8686bd4754c0",
+                            CreatedOn = new DateTimeOffset(new DateTime(2021, 10, 31, 4, 33, 39, 190, DateTimeKind.Unspecified), new TimeSpan(0, 7, 0, 0, 0)),
+                            Email = "admin@biowellacademy.com",
+                            EmailConfirmed = false,
+                            ExtensionData = "",
+                            FullName = "Admin",
+                            IsDeleted = false,
+                            LatestUpdatedOn = new DateTimeOffset(new DateTime(2018, 5, 29, 4, 33, 39, 190, DateTimeKind.Unspecified), new TimeSpan(0, 7, 0, 0, 0)),
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@BIOWELLACADEMY.COM",
+                            NormalizedUserName = "ADMIN@BIOWELLACADEMY.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAEqSCV8Bpg69irmeg8N86U503jGEAYf75fBuzvL00/mr/FGEsiUqfR0rWBbBUwqtw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d6847450-47f0-4c7a-9fed-0c66234bf61f",
+                            TwoFactorEnabled = false,
+                            UserGuid = new Guid("ed8210c3-24b0-4823-a744-80078cf12eb4"),
+                            UserName = "admin@simplcommerce.com"
+                        });
+                });
+
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.AppUserRole", b =>
+                {
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Core_UserRole", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            UserId = 2L,
+                            RoleId = 1L
+                        });
+                });
+
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.Country", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Code3")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsBillingEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCityEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDistrictEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsShippingEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsZipCodeEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long?>("StateOrProvinceId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Core_Country", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "CN",
+                            Code3 = "CHN",
+                            IsBillingEnabled = true,
+                            IsCityEnabled = false,
+                            IsDistrictEnabled = true,
+                            IsShippingEnabled = true,
+                            IsZipCodeEnabled = false,
+                            Name = "China"
+                        },
+                        new
+                        {
+                            Id = "US",
+                            Code3 = "USA",
+                            IsBillingEnabled = true,
+                            IsCityEnabled = true,
+                            IsDistrictEnabled = false,
+                            IsShippingEnabled = true,
+                            IsZipCodeEnabled = true,
+                            Name = "United States"
+                        });
+                });
+
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.District", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<long?>("StateOrProvinceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StateOrProvinceId");
+
+                    b.ToTable("Core_District", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "普陀区",
+                            StateOrProvinceId = 1L,
+                            Type = "Province"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "静安区",
+                            StateOrProvinceId = 1L,
+                            Type = "Province"
+                        });
+                });
+
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.StateOrProvince", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CountryId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("Core_StateOrProvince", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            CountryId = "CN",
+                            Name = "上海",
+                            Type = "直辖市"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Code = "WA",
+                            CountryId = "US",
+                            Name = "Washington"
+                        });
                 });
 
             modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.UserAddress", b =>
@@ -339,21 +496,6 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Core_UserAddress", (string)null);
-                });
-
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.UserRole", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Core_UserRole", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -449,14 +591,12 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.HasOne("eLearn.Modules.Users.Core.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("eLearn.Modules.Users.Core.Entities.District", "District")
                         .WithMany()
                         .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("eLearn.Modules.Users.Core.Entities.StateOrProvince", "StateOrProvince")
                         .WithMany()
@@ -471,13 +611,31 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.Navigation("StateOrProvince");
                 });
 
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.AppUserRole", b =>
+                {
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppRole", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.District", b =>
                 {
                     b.HasOne("eLearn.Modules.Users.Core.Entities.StateOrProvince", "StateOrProvince")
                         .WithMany()
                         .HasForeignKey("StateOrProvinceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("StateOrProvince");
                 });
@@ -487,27 +645,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.HasOne("eLearn.Modules.Users.Core.Entities.Country", "Country")
                         .WithMany("StatesOrProvinces")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.User", b =>
-                {
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.UserAddress", "DefaultBillingAddress")
-                        .WithMany()
-                        .HasForeignKey("DefaultBillingAddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.UserAddress", "DefaultShippingAddress")
-                        .WithMany()
-                        .HasForeignKey("DefaultShippingAddressId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("DefaultBillingAddress");
-
-                    b.Navigation("DefaultShippingAddress");
                 });
 
             modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.UserAddress", b =>
@@ -518,7 +658,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.User", "User")
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppUser", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -529,28 +669,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.UserRole", b =>
-                {
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.User", "User")
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.Role", null)
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -559,7 +680,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.User", null)
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -568,7 +689,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.User", null)
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -577,7 +698,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
-                    b.HasOne("eLearn.Modules.Users.Core.Entities.User", null)
+                    b.HasOne("eLearn.Modules.Users.Core.Entities.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -589,21 +710,21 @@ namespace eLearn.Modules.Users.Core.Persistence.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.Country", b =>
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.AppRole", b =>
                 {
-                    b.Navigation("StatesOrProvinces");
+                    b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.Role", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.User", b =>
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.AppUser", b =>
                 {
                     b.Navigation("Addresses");
 
-                    b.Navigation("Roles");
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("eLearn.Modules.Users.Core.Entities.Country", b =>
+                {
+                    b.Navigation("StatesOrProvinces");
                 });
 #pragma warning restore 612, 618
         }

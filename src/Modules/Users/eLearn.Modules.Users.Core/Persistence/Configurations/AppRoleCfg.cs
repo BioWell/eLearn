@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eLearn.Modules.Users.Core.Persistence.Configurations
 {
-    internal class RoleCfg : IEntityTypeConfiguration<Role>
+    internal class AppRoleCfg : IEntityTypeConfiguration<AppRole>
     {
-        public void Configure(EntityTypeBuilder<Role> builder)
+        public void Configure(EntityTypeBuilder<AppRole> builder)
         {
-            // Each Role can have many entries in the UserRole join table
-            builder.HasMany(e => e.Users)
-                .WithOne(e => e.Role)
-                .HasForeignKey(ur => ur.RoleId)
+            builder.HasMany(x => x.UserRoles)
+                .WithOne(x => x.Role)
+                .HasForeignKey(x => x.RoleId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
-
+            
             builder.ToTable("Core_Role");
         }
     }

@@ -12,7 +12,7 @@ namespace eLearn.Modules.Users.Core.Entities
         public string? Name { get; set; }
         public string? Type { get; set; }
         public string? Location { get; set; }
-        public long StateOrProvinceId { get; set; }
-        public virtual StateOrProvince StateOrProvince { get; set; } = new StateOrProvince();
+        public long? StateOrProvinceId { get; set; }
+        public virtual StateOrProvince? StateOrProvince { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace eLearn.Modules.Users.Core.Commands.Handlers
                 throw new EmailInUseException();
             }
             
-            user = new User
+            user = new AppUser
             {
                 // Id = Guid.NewGuid().ToString(),
                 UserName = command.Email,

@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Persistence;
 using eLearn.Modules.Users.Core.Repositories;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure;
@@ -32,10 +31,11 @@ namespace eLearn.Modules.Users.Core
             var options = services.GetOptions<SqlserverOptions>("sqlserver");
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
             {
+                optionsBuilder.EnableSensitiveDataLogging(true);
                 optionsBuilder.UseSqlServer(options.ConnectionString);
             });
 
-            services.AddIdentity<User, Role>(identityOptions =>
+            services.AddIdentity<AppUser, AppRole>(identityOptions =>
                 {
                     identityOptions.Password.RequireDigit = false;
                     identityOptions.Password.RequiredLength = 4;

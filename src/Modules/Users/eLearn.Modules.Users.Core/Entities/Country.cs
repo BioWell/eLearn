@@ -17,7 +17,8 @@ namespace eLearn.Modules.Users.Core.Entities
         public bool IsCityEnabled { get; set; } = true;
         public bool IsZipCodeEnabled { get; set; } = true;
         public bool IsDistrictEnabled { get; set; } = true;
-        public long StateOrProvinceId { get; set; }
-        public virtual IList<StateOrProvince> StatesOrProvinces { get; set; } = new List<StateOrProvince>();
+        
+        public long? StateOrProvinceId { get; set; }
+        public virtual IList<StateOrProvince>? StatesOrProvinces { get; set; }
     }
 }
