@@ -15,7 +15,7 @@ namespace eLearn.Modules.Users.Core.Entities
 
         public const string SettingsDataKey = "Settings";
 
-        public Guid UserGuid { get; set; } 
+        public Guid UserGuid { get; set; } = Guid.NewGuid();
         public string FullName { get; set; } = string.Empty;
         public string? RefreshTokenHash { get; set; }
         public string? Culture { get; set; }

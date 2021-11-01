@@ -20,15 +20,6 @@ app.Run();
 void ConfigureService(IServiceCollection services)
 {
     builder.Services.AddModularInfrastructure();
-    
-    // modules
-    //     .AddIdentityModule(_config)
-    //     .AddSharedApplication(_config)
-    //     .AddCatalogModule(_config)
-    //     .AddPeopleModule(_config)
-    //     .AddSalesModule(_config)
-    //     .AddInventoryModule(_config);
-    
     foreach (var module in modules)
     {
         module.Register(builder.Services);

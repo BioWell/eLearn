@@ -16,13 +16,26 @@ namespace eLearn.Modules.Users.Api.Controllers
             _identityService = identityService;
         }
         
-        [HttpPost("sign-up")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("register")]
+        //[AllowAnonymous]
         public async Task<ActionResult> SignUpAsync(RegisterRequest request)
         {
             var origin = Request.Headers["origin"];
             return Ok(await _identityService.RegisterAsync(request, origin));
+        }
+        
+        [HttpGet("confirm-email")]
+        // [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
+        {
+            return Ok(await _identityService.ConfirmEmailAsync(userId, code));
+        }
+        
+        [HttpGet("confirm-phone-number")]
+        // [AllowAnonymous]
+        public async Task<IActionResult> ConfirmPhoneNumberAsync([FromQuery] string userId, [FromQuery] string code)
+        {
+            return Ok(await _identityService.ConfirmPhoneNumberAsync(userId, code));
         }
         
         // [HttpPost("sign-in")]

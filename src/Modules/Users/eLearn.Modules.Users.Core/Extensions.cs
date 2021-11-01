@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Persistence;
@@ -38,7 +39,7 @@ namespace eLearn.Modules.Users.Core
             var options = services.GetOptions<SqlserverOptions>(nameof(SqlserverOptions));
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
             {
-                optionsBuilder.EnableSensitiveDataLogging(true);
+                // optionsBuilder.EnableSensitiveDataLogging(true);
                 optionsBuilder.UseSqlServer(options.ConnectionString);
             });
 
@@ -55,6 +56,11 @@ namespace eLearn.Modules.Users.Core
                 })
                 .AddEntityFrameworkStores<UsersDbContext>()
                 .AddDefaultTokenProviders();
+            
+            // Develop purpose
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+                options.TokenLifespan = TimeSpan.FromMinutes(1));
+
             services.AddHangfire(x => x.UseSqlServerStorage(options.ConnectionString));
             return services;
         }

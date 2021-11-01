@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>disable</ImplicitUsings>
-    </PropertyGroup>
+      <UserSecretsId>5d11df61-31bf-4228-bd8e-2647601f896e</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Modules\Courses\eLearn.Modules.Courses.Api\eLearn.Modules.Courses.Api.csproj" />

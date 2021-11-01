@@ -45,6 +45,11 @@ namespace eLearn.Modules.Users.Core.Services
 
         public async Task<IResult> RegisterAsync(RegisterRequest request, string origin)
         {
+            if (string.IsNullOrEmpty(origin))
+            {
+                throw new IdentityException(string.Format(_localizer["origin is empty."]));
+            }
+            
             if (!_registrationOptions.Enabled)
             {
                 throw new IdentityException(string.Format(_localizer["System SignUp Disabled."]));
@@ -69,8 +74,7 @@ namespace eLearn.Modules.Users.Core.Services
                 Email = request.Email,
                 FullName = request.FullName,
                 PhoneNumber = request.PhoneNumber,
-                IsDeleted = false,
-                UserGuid = new Guid()
+                IsDeleted = false
             };
             
             if (request.EmailConfirmed) user.EmailConfirmed = true;
@@ -94,7 +98,7 @@ namespace eLearn.Modules.Users.Core.Services
                 {
                     return await Result<string>.SuccessAsync(user.Id.ToString(), message: string.Format(_localizer["User {0} Registered."], user.UserName));
                 }
-                // TO DO
+           
                 var messages = new List<string> { string.Format(_localizer["User {0} Registered."], user.UserName) };
                 
                 if (_mailSettings.EnableVerification)
@@ -120,9 +124,31 @@ namespace eLearn.Modules.Users.Core.Services
             }
         }
 
-        public Task<IResult<string>> ConfirmEmailAsync(string userId, string code)
+        public async Task<IResult<string>> ConfirmEmailAsync(string userId, string code)
         {
-            throw new System.NotImplementedException();
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new IdentityException(_localizer["An error occurred while confirming E-Mail."]);
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+            {
+                if (user.PhoneNumberConfirmed )//|| !_smsSettings.EnableVerification)
+                {
+                    return await Result<string>.SuccessAsync(user.Id.ToString(), string.Format(_localizer["Account Confirmed for E-Mail {0}. You can now use the /api/identity/token endpoint to generate JWT."], user.Email));
+                }
+                else
+                {
+                    return await Result<string>.SuccessAsync(user.Id.ToString(), string.Format(_localizer["Account Confirmed for E-Mail {0}. You should confirm your Phone Number before using the /api/identity/token endpoint to generate JWT."], user.Email));
+                }
+            }
+            else
+            {
+                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"], user.Email));
+            }
         }
 
         public Task<IResult<string>> ConfirmPhoneNumberAsync(string userId, string code)
