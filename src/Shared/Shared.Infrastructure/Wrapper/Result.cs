@@ -76,9 +76,9 @@ namespace Shared.Infrastructure.Wrapper
 
     public class ErrorResult<T> : Result<T>
     {
-        public string Source { get; set; }
+        public string Source { get; set; } = string.Empty;
 
-        public string Exception { get; set; }
+        public string Exception { get; set; } = string.Empty;
 
         public int ErrorCode { get; set; }
     }
@@ -89,7 +89,7 @@ namespace Shared.Infrastructure.Wrapper
         {
         }
 
-        public T Data { get; set; }
+        public T? Data { get; set; } = default;
 
         public new static Result<T> Fail()
         {

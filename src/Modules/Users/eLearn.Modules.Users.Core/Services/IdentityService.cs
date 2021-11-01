@@ -27,14 +27,14 @@ namespace eLearn.Modules.Users.Core.Services
             UserManager<AppUser> userManager,
             // IJobService jobService,
             IMailService mailService,
-            IOptions<MailSettings> mailSettings,
+            MailSettings mailSettings,
             IStringLocalizer<IdentityService> localizer, 
             RegistrationOptions registrationOptions)
         {
             _userManager = userManager;
             // _jobService = jobService;
             _mailService = mailService;
-            _mailSettings = mailSettings.Value;
+            _mailSettings = mailSettings;
             _localizer = localizer;
             _registrationOptions = registrationOptions;
         }

@@ -12,9 +12,9 @@ namespace Shared.Infrastructure.Services.Email
         private readonly MailSettings _settings;
         private readonly ILogger<SmtpMailService> _logger;
 
-        public SmtpMailService(IOptions<MailSettings> settings, ILogger<SmtpMailService> logger)
+        public SmtpMailService(MailSettings settings, ILogger<SmtpMailService> logger)
         {
-            _settings = settings.Value;
+            _settings = settings;
             _logger = logger;
         }
 

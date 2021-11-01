@@ -1,4 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: InternalsVisibleTo("eLearn.Modules.Courses.Api")]
@@ -9,7 +12,10 @@ namespace eLearn.Modules.Courses.Core
     {
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             AddDatabase(services);
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             return services;
         }       
         

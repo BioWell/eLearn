@@ -8,7 +8,9 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="10.1.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
       <PackageReference Include="FluentValidation" Version="10.3.4" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
       <PackageReference Include="Humanizer.Core" Version="2.11.10" />
       <PackageReference Include="MailKit" Version="2.15.0" />
       <PackageReference Include="MediatR" Version="9.0.0" />
@@ -17,10 +19,16 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0-rc.2.21480.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0-rc.2.21480.5" />
       <PackageReference Include="MimeKit" Version="2.15.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Wrapper\PaginatedResult.cs" />
+      <None Include="Wrapper\PaginatedResult.cs" />
     </ItemGroup>
     
 </Project>
