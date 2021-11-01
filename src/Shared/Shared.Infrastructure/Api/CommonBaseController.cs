@@ -11,12 +11,12 @@ namespace Shared.Infrastructure.Api
     {
         protected internal const string BasePath = "api";
 
-        // private IMediator? _mediatorInstance;
+        private IMediator _mediatorInstance;
+        
+        protected IMediator Mediator => _mediatorInstance ??= HttpContext.RequestServices.GetService<IMediator>();
+        
+        // private IMapper _mapperInstance;
         //
-        // protected IMediator? Mediator => _mediatorInstance ??= HttpContext.RequestServices.GetService<IMediator>();
-        //
-        // private IMapper? _mapperInstance;
-        //
-        // protected IMapper? Mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
+        // protected IMapper Mapper => _mapperInstance ??= HttpContext.RequestServices.GetService<IMapper>();
     }
 }

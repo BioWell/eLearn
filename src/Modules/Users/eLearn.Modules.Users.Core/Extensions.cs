@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Persistence;
 using eLearn.Modules.Users.Core.Repositories;
+using eLearn.Modules.Users.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure;
@@ -18,11 +19,12 @@ namespace eLearn.Modules.Users.Core
         public static IServiceCollection AddCore(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            // services.AddAutoMapper(Assembly.GetExecutingAssembly());
             var registrationOptions = services.GetOptions<RegistrationOptions>("users:registration");
             services.AddSingleton(registrationOptions);
             services.AddDatabase()
                 .AddScoped<IUserRepository, UserRepository>();
-
+            services.AddTransient<IIdentityService, IdentityService>();
             return services;
         }
 

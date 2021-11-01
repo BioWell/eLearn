@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Reflection;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +14,17 @@ namespace Shared.Infrastructure
     {
         public static IServiceCollection AddModularInfrastructure(this IServiceCollection services)
         {
+            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddErrorHandling();
             services.AddControllers()
                 .ConfigureApplicationPartManager(manager =>
                 {
                     manager.FeatureProviders.Add(new InternalControllerFeatureProvider());
                 });
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
             services.AddApplicationLayer();
             services.AddEndpointsApiExplorer();
             return services;
@@ -25,7 +32,6 @@ namespace Shared.Infrastructure
 
         public static WebApplication UseModularInfrastructure(this WebApplication app)
         {
-            app.UseErrorHandling();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

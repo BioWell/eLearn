@@ -1,28 +1,28 @@
 ﻿using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Commands;
-using MediatR;
+using eLearn.Modules.Users.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eLearn.Modules.Users.Api.Controllers
 {
     [Route(BasePath)]
-    internal class AccountController : BaseController
+    internal sealed class IdentityController : BaseController
     {
-        private readonly IMediator _mediator;
+        private readonly IIdentityService _identityService;
 
-        public AccountController(IMediator mediator)
+        public IdentityController(IIdentityService identityService)
         {
-            _mediator = mediator;
+            _identityService = identityService;
         }
-
+        
         [HttpPost("sign-up")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> SignUpAsync(SignUp command)
+        public async Task<ActionResult> SignUpAsync(RegisterRequest request)
         {
-            await _mediator.Send(command);
-            return NoContent();
+            var origin = Request.Headers["origin"];
+            return Ok(await _identityService.RegisterAsync(request, origin));
         }
         
         // [HttpPost("sign-in")]
