@@ -3,6 +3,7 @@ using System.Net;
 using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.FileProviders;
 using Shared.Infrastructure.Api;
 using Shared.Infrastructure.Cors;
 using Shared.Infrastructure.Exceptions;
+using Shared.Infrastructure.Hangfire;
 using Shared.Infrastructure.Interceptors;
 using Shared.Infrastructure.Serialization;
 using Shared.Infrastructure.Services.Email;
@@ -48,6 +50,10 @@ namespace Shared.Infrastructure
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseHangfireDashboard("/jobs", new DashboardOptions
+            {
+                DashboardTitle = "eLearn Jobs"
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -87,6 +93,7 @@ namespace Shared.Infrastructure
             // 5. Application layer
             services.AddApplicationLayer();
             services.AddEndpointsApiExplorer();
+            services.AddHangfireServer();
 
             // 6. Doc & swagger
             // ...
@@ -110,8 +117,10 @@ namespace Shared.Infrastructure
         private static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
             var options = services.GetOptions<MailSettings>(nameof(MailSettings));
-            services.AddTransient<IMailService, SmtpMailService>();
             services.AddSingleton(options);
+            services.AddTransient<IMailService, SmtpMailService>();
+
+            services.AddScoped<IJobService, HangfireService>();
             return services;
         }
 

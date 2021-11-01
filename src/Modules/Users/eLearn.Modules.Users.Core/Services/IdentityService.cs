@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Commands;
 using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Constants;
+using Shared.Infrastructure.Hangfire;
 using Shared.Infrastructure.Services.Email;
 using Shared.Infrastructure.Wrapper;
 
@@ -17,7 +21,7 @@ namespace eLearn.Modules.Users.Core.Services
     internal class IdentityService : IIdentityService
     {
         private readonly UserManager<AppUser> _userManager;
-        // private readonly IJobService _jobService;
+        private readonly IJobService _jobService;
         private readonly IMailService _mailService;
         private readonly MailSettings _mailSettings;
         private readonly IStringLocalizer<IdentityService> _localizer;
@@ -25,14 +29,14 @@ namespace eLearn.Modules.Users.Core.Services
 
         public IdentityService(
             UserManager<AppUser> userManager,
-            // IJobService jobService,
+            IJobService jobService,
             IMailService mailService,
             MailSettings mailSettings,
             IStringLocalizer<IdentityService> localizer, 
             RegistrationOptions registrationOptions)
         {
             _userManager = userManager;
-            // _jobService = jobService;
+            _jobService = jobService;
             _mailService = mailService;
             _mailSettings = mailSettings;
             _localizer = localizer;
@@ -65,7 +69,8 @@ namespace eLearn.Modules.Users.Core.Services
                 Email = request.Email,
                 FullName = request.FullName,
                 PhoneNumber = request.PhoneNumber,
-                IsDeleted = false
+                IsDeleted = false,
+                UserGuid = new Guid()
             };
             
             if (request.EmailConfirmed) user.EmailConfirmed = true;
@@ -92,6 +97,21 @@ namespace eLearn.Modules.Users.Core.Services
                 // TO DO
                 var messages = new List<string> { string.Format(_localizer["User {0} Registered."], user.UserName) };
                 
+                if (_mailSettings.EnableVerification)
+                {
+                    // send verification email
+                    string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);
+                    var mailRequest = new MailRequest
+                    {
+                        From = _mailSettings.From,
+                        To = user.Email,
+                        Body = string.Format(_localizer["Please confirm your account by <a href='{0}'>clicking here</a>."], emailVerificationUri),
+                        Subject = _localizer["Confirm Registration"]
+                    };
+                    _jobService.Enqueue(() => _mailService.SendAsync(mailRequest));
+
+                    messages.Add(_localizer["Please check your Mailbox to verify!"]);
+                }
                 return await Result<string>.SuccessAsync(user.Id.ToString(), messages: messages);
             }
             else
@@ -118,6 +138,17 @@ namespace eLearn.Modules.Users.Core.Services
         public Task<IResult> ResetPasswordAsync(ResetPasswordRequest request)
         {
             throw new System.NotImplementedException();
+        }
+        
+        private async Task<string> GetEmailVerificationUriAsync(AppUser user, string origin)
+        {
+            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            string route = "api/identity/confirm-email/";
+            var endpointUri = new Uri(string.Concat($"{origin}/", route));
+            string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id.ToString());
+            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+            return verificationUri;
         }
     }
 }

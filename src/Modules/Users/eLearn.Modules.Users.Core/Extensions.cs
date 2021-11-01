@@ -5,11 +5,13 @@ using eLearn.Modules.Users.Core.Persistence;
 using eLearn.Modules.Users.Core.Repositories;
 using eLearn.Modules.Users.Core.Services;
 using FluentValidation;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure;
 using Shared.Infrastructure.Persistence.SqlServer;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
 [assembly: InternalsVisibleTo("eLearn.Modules.Users.Api")]
 
@@ -48,9 +50,12 @@ namespace eLearn.Modules.Users.Core
                     identityOptions.Password.RequireUppercase = false;
                     identityOptions.Password.RequireLowercase = false;
                     identityOptions.Password.RequiredUniqueChars = 0;
-                })
-                .AddEntityFrameworkStores<UsersDbContext>();
 
+                    identityOptions.SignIn.RequireConfirmedEmail = true;
+                })
+                .AddEntityFrameworkStores<UsersDbContext>()
+                .AddDefaultTokenProviders();
+            services.AddHangfire(x => x.UseSqlServerStorage(options.ConnectionString));
             return services;
         }
     }
