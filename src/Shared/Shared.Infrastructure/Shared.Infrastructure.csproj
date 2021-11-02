@@ -21,6 +21,12 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0-rc.2.21480.5" />
       <PackageReference Include="MimeKit" Version="2.15.1" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Serilog" Version="2.10.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+      <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+      <PackageReference Include="Serilog.Sinks.Seq" Version="5.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,6 +36,8 @@
     <ItemGroup>
       <Compile Remove="Wrapper\PaginatedResult.cs" />
       <None Include="Wrapper\PaginatedResult.cs" />
+      <Compile Remove="Logging\Extensions.cs" />
+      <None Include="Logging\Extensions.cs" />
     </ItemGroup>
     
 </Project>
