@@ -1,7 +1,13 @@
-﻿namespace Shared.Infrastructure.Cors
+﻿using System.Collections.Generic;
+
+namespace Shared.Infrastructure.Cors
 {
-    public class CorsSettings
+    public sealed class CorsSettings
     {
-        public string Url { get; set; } = string.Empty;
+        public bool AllowCredentials { get; set; }
+        public IEnumerable<string>? AllowedOrigins { get; set; }
+        public IEnumerable<string>? AllowedMethods { get; set; }
+        public IEnumerable<string>? AllowedHeaders { get; set; }
+        public IEnumerable<string>? ExposedHeaders { get; set; }
     }
 }
