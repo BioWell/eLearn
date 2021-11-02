@@ -31,13 +31,13 @@ namespace eLearn.Modules.Users.Api.Controllers
             return Ok(await _identityService.ConfirmEmailAsync(userId, code));
         }
         
-        [HttpGet("confirm-phone-number")]
-        // [AllowAnonymous]
-        public async Task<IActionResult> ConfirmPhoneNumberAsync([FromQuery] string userId, [FromQuery] string code)
-        {
-            return Ok(await _identityService.ConfirmPhoneNumberAsync(userId, code));
-        }
-        
+        // [HttpGet("confirm-phone-number")]
+        // // [AllowAnonymous]
+        // public async Task<IActionResult> ConfirmPhoneNumberAsync([FromQuery] string userId, [FromQuery] string code)
+        // {
+        //     return Ok(await _identityService.ConfirmPhoneNumberAsync(userId, code));
+        // }
+        //
         // [HttpPost("sign-in")]
         // [ProducesResponseType(StatusCodes.Status204NoContent)]
         // [ProducesResponseType(StatusCodes.Status400BadRequest)]

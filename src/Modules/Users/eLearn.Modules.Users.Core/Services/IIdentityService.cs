@@ -7,6 +7,8 @@ namespace eLearn.Modules.Users.Core.Services
     internal interface IIdentityService
     {
         Task<IResult> RegisterAsync(RegisterRequest request, string origin);
+        
+        Task<IResult> LoginAsync(RegisterRequest request);
 
         Task<IResult<string>> ConfirmEmailAsync(string userId, string code);
 

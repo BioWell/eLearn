@@ -51,8 +51,14 @@ namespace eLearn.Modules.Users.Core
                     identityOptions.Password.RequireUppercase = false;
                     identityOptions.Password.RequireLowercase = false;
                     identityOptions.Password.RequiredUniqueChars = 0;
+                    
+                    identityOptions.User.RequireUniqueEmail = true;
 
-                    identityOptions.SignIn.RequireConfirmedEmail = true;
+                    identityOptions.SignIn.RequireConfirmedEmail = true; // need to limit timespan?
+                    
+                    identityOptions.Lockout.AllowedForNewUsers = true;
+                    identityOptions.Lockout.MaxFailedAccessAttempts = 5;
+                    identityOptions.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
                 })
                 .AddEntityFrameworkStores<UsersDbContext>()
                 .AddDefaultTokenProviders();

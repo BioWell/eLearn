@@ -53,6 +53,12 @@ namespace Shared.Infrastructure.Logging
                 var loggerOptions = context.Configuration.GetOptions<LoggerSettings>(nameof(LoggerSettings));
                 MapOptions(loggerOptions, appOptions, loggerConfiguration, context.HostingEnvironment.EnvironmentName);
                 configure?.Invoke(loggerConfiguration);
+                if (loggerOptions.Console is null) return;
+                if (loggerOptions.Console.Enabled && !string.IsNullOrWhiteSpace(appOptions.Name))
+                {
+                    Console.WriteLine(Figgle.FiggleFonts.Doom.Render($"{appOptions.Name} {appOptions.Version}"));
+                }
+
             });
 
         private static void MapOptions(LoggerSettings loggerSettings, AppSettings appSettings,

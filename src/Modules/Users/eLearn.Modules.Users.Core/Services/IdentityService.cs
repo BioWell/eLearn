@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Commands;
 using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +17,7 @@ using Shared.Infrastructure.Constants;
 using Shared.Infrastructure.Hangfire;
 using Shared.Infrastructure.Services.Email;
 using Shared.Infrastructure.Wrapper;
+using IResult = Shared.Infrastructure.Wrapper.IResult;
 
 namespace eLearn.Modules.Users.Core.Services
 {
@@ -26,6 +29,7 @@ namespace eLearn.Modules.Users.Core.Services
         private readonly MailSettings _mailSettings;
         private readonly IStringLocalizer<IdentityService> _localizer;
         private readonly RegistrationSettings _registrationSettings;
+        private readonly ITokenService _tokenService;
 
         public IdentityService(
             UserManager<AppUser> userManager,
@@ -33,7 +37,8 @@ namespace eLearn.Modules.Users.Core.Services
             IMailService mailService,
             MailSettings mailSettings,
             IStringLocalizer<IdentityService> localizer, 
-            RegistrationSettings registrationSettings)
+            RegistrationSettings registrationSettings, 
+            ITokenService tokenService)
         {
             _userManager = userManager;
             _jobService = jobService;
@@ -41,6 +46,7 @@ namespace eLearn.Modules.Users.Core.Services
             _mailSettings = mailSettings;
             _localizer = localizer;
             _registrationSettings = registrationSettings;
+            _tokenService = tokenService;
         }
 
         public async Task<IResult> RegisterAsync(RegisterRequest request, string origin)
@@ -74,7 +80,7 @@ namespace eLearn.Modules.Users.Core.Services
                 Email = request.Email,
                 FullName = request.FullName,
                 PhoneNumber = request.PhoneNumber,
-                IsDeleted = false
+                IsActive = true
             };
             
             if (request.EmailConfirmed) user.EmailConfirmed = true;
@@ -122,6 +128,55 @@ namespace eLearn.Modules.Users.Core.Services
             {
                 throw new IdentityException(_localizer["Validation Errors Occurred."], result.Errors.Select(a => _localizer[a.Description].ToString()).ToList());
             }
+        }
+
+        public async Task<IResult> LoginAsync(RegisterRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new IdentityException(_localizer["User Not Found."], statusCode: HttpStatusCode.Unauthorized);
+            }
+
+            if (!await _userManager.IsLockedOutAsync(user))
+            {
+                throw new IdentityException(_localizer["User Is Locked. Please try it later."], statusCode: HttpStatusCode.Forbidden); 
+            }
+            
+            if (!user.IsActive)
+            {
+                throw new IdentityException(_localizer["User Not Active. Please contact the administrator."], statusCode: HttpStatusCode.Unauthorized);
+            }
+            
+            if (_mailSettings.EnableVerification && !await _userManager.IsEmailConfirmedAsync(user))
+            {
+                throw new IdentityException(_localizer["E-Mail not confirmed."], statusCode: HttpStatusCode.Unauthorized);
+            }
+            //
+            // if (_smsSettings.EnableVerification && !user.PhoneNumberConfirmed)
+            // {
+            //     throw new IdentityException(_localizer["Phone Number not confirmed."], statusCode: HttpStatusCode.Unauthorized);
+            // }
+            
+            bool passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!passwordValid)
+            {
+                throw new IdentityException(_localizer["Invalid Credentials."], statusCode: HttpStatusCode.Unauthorized);
+            }
+            
+            await _userManager.ResetAccessFailedCountAsync(user);
+
+            if (await _userManager.GetTwoFactorEnabledAsync(user))
+            {
+            }
+
+            user.RefreshToken = _tokenService.GenerateRefreshToken();
+            // user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_config.RefreshTokenExpirationInDays);
+            await _userManager.UpdateAsync(user);
+            // string token = await GenerateJwtAsync(user, ipAddress);
+            // var response = new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime);
+            // await _eventLog.LogCustomEventAsync(new() { Description = $"Generated Tokens for {user.Email}.", Email = user.Email });
+            return await Result<string>.SuccessAsync("ok");
         }
 
         public async Task<IResult<string>> ConfirmEmailAsync(string userId, string code)
