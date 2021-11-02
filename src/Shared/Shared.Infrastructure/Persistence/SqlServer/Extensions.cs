@@ -6,7 +6,7 @@ namespace Shared.Infrastructure.Persistence.SqlServer
     {
         public static IServiceCollection AddPostgres(this IServiceCollection services)
         {
-            var options = services.GetOptions<SqlserverOptions>(nameof(SqlserverOptions));
+            var options = services.GetOptions<MsSqlSettings>(nameof(MsSqlSettings));
             services.AddSingleton(options);
             return services;
         }

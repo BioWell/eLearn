@@ -14,11 +14,6 @@ namespace Shared.Infrastructure.Modules
                 builder.Configuration.AddJsonFile(settings);
             }
 
-            // foreach (var settings in GetSettings($"*.{builder.Environment.EnvironmentName}"))
-            // {
-            //     builder.Configuration.AddJsonFile(settings);
-            // }
-
             IEnumerable<string> GetSettings(string pattern)
                 => Directory.EnumerateFiles(builder.Environment.ContentRootPath,
                     $"module.{pattern}.json", SearchOption.AllDirectories);

@@ -64,11 +64,12 @@ namespace Shared.Infrastructure
 
         private static IServiceCollection AddSharedInfrastructure(this IServiceCollection services)
         {
-            // 1. Controller MediatR & AutoMapper
+            // 1. Controller MediatR & AutoMapper & Application layer
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
+            services.AddApplicationLayer();
+            
             // 2. DbSet 
             //   Domain event & log
             // ...
@@ -90,8 +91,7 @@ namespace Shared.Infrastructure
             services.AddTransient<IValidatorInterceptor, ValidatorInterceptor>();
             services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
 
-            // 5. Application layer
-            services.AddApplicationLayer();
+            // 5. Background services
             services.AddEndpointsApiExplorer();
             services.AddHangfireServer();
 
@@ -116,10 +116,11 @@ namespace Shared.Infrastructure
 
         private static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         {
-            var options = services.GetOptions<MailSettings>(nameof(MailSettings));
-            services.AddSingleton(options);
+            var appOptions = services.GetOptions<AppSettings>(nameof(AppSettings));
+            services.AddSingleton(appOptions);
+            var mailOptions = services.GetOptions<MailSettings>(nameof(MailSettings));
+            services.AddSingleton(mailOptions);
             services.AddTransient<IMailService, SmtpMailService>();
-
             services.AddScoped<IJobService, HangfireService>();
             return services;
         }
@@ -131,7 +132,7 @@ namespace Shared.Infrastructure
             return configuration.GetOptions<T>(sectionName);
         }
 
-        private static T GetOptions<T>(this IConfiguration configuration, string sectionName) where T : new()
+        public static T GetOptions<T>(this IConfiguration configuration, string sectionName) where T : new()
         {
             var options = new T();
             configuration.GetSection(sectionName).Bind(options);

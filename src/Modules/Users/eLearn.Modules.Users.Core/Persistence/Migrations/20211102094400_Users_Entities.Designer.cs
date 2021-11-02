@@ -12,7 +12,7 @@ using eLearn.Modules.Users.Core.Persistence;
 namespace eLearn.Modules.Users.Core.Persistence.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20211101095253_Users_Entities")]
+    [Migration("20211102094400_Users_Entities")]
     partial class Users_Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

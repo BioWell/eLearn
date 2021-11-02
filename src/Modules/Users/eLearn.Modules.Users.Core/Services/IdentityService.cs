@@ -25,7 +25,7 @@ namespace eLearn.Modules.Users.Core.Services
         private readonly IMailService _mailService;
         private readonly MailSettings _mailSettings;
         private readonly IStringLocalizer<IdentityService> _localizer;
-        private readonly RegistrationOptions _registrationOptions;
+        private readonly RegistrationSettings _registrationSettings;
 
         public IdentityService(
             UserManager<AppUser> userManager,
@@ -33,14 +33,14 @@ namespace eLearn.Modules.Users.Core.Services
             IMailService mailService,
             MailSettings mailSettings,
             IStringLocalizer<IdentityService> localizer, 
-            RegistrationOptions registrationOptions)
+            RegistrationSettings registrationSettings)
         {
             _userManager = userManager;
             _jobService = jobService;
             _mailService = mailService;
             _mailSettings = mailSettings;
             _localizer = localizer;
-            _registrationOptions = registrationOptions;
+            _registrationSettings = registrationSettings;
         }
 
         public async Task<IResult> RegisterAsync(RegisterRequest request, string origin)
@@ -50,14 +50,14 @@ namespace eLearn.Modules.Users.Core.Services
                 throw new IdentityException(string.Format(_localizer["origin is empty."]));
             }
             
-            if (!_registrationOptions.Enabled)
+            if (!_registrationSettings.Enabled)
             {
                 throw new IdentityException(string.Format(_localizer["System SignUp Disabled."]));
             }
 
             var email = request.Email.ToLowerInvariant();
             var provider = email.Split("@").Last();
-            if (_registrationOptions.InvalidEmailProviders?.Any(x => provider.Contains(x)) is true)
+            if (_registrationSettings.InvalidEmailProviders?.Any(x => provider.Contains(x)) is true)
             {
                 throw new IdentityException(string.Format(_localizer["Email:{0} is invalid."], request.Email));
             }

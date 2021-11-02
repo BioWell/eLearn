@@ -10,7 +10,7 @@ namespace eLearn.Modules.Courses.Core
 {
     internal static class Extensions
     {
-        public static IServiceCollection AddCore(this IServiceCollection services)
+        public static IServiceCollection AddCore(this IServiceCollection services, string moduleName)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

@@ -1,10 +1,10 @@
 {
-  "users": {
+  "Users": {
     "module": {
       "name": "Users",
       "enabled": true
     },
-    "registration": {
+    "RegistrationSettings": {
       "enabled": true,
       "invalidEmailProviders": [
         "discard",

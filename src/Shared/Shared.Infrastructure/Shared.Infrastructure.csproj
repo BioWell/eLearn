@@ -36,8 +36,6 @@
     <ItemGroup>
       <Compile Remove="Wrapper\PaginatedResult.cs" />
       <None Include="Wrapper\PaginatedResult.cs" />
-      <Compile Remove="Logging\Extensions.cs" />
-      <None Include="Logging\Extensions.cs" />
     </ItemGroup>
     
 </Project>

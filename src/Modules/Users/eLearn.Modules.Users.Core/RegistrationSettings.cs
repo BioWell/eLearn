@@ -2,7 +2,7 @@
 
 namespace eLearn.Modules.Users.Core
 {
-    public class RegistrationOptions
+    public class RegistrationSettings
     {
         public bool Enabled { get; set; }
         public IEnumerable<string> InvalidEmailProviders { get; set; } = System.Array.Empty<string>();

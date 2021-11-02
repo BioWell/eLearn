@@ -20,12 +20,12 @@ namespace eLearn.Modules.Users.Core
 {
     internal static class Extensions
     {
-        public static IServiceCollection AddCore(this IServiceCollection services)
+        public static IServiceCollection AddCore(this IServiceCollection services, string moduleName)
         {
             services.AddHttpContextAccessor();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             // services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            var registrationOptions = services.GetOptions<RegistrationOptions>("users:registration");
+            var registrationOptions = services.GetOptions<RegistrationSettings>($"{moduleName}:RegistrationSettings");
             services.AddSingleton(registrationOptions);
             services.AddDatabase()
                 .AddScoped<IUserRepository, UserRepository>();
@@ -36,7 +36,7 @@ namespace eLearn.Modules.Users.Core
 
         private static IServiceCollection AddDatabase(this IServiceCollection services)
         {
-            var options = services.GetOptions<SqlserverOptions>(nameof(SqlserverOptions));
+            var options = services.GetOptions<MsSqlSettings>(nameof(MsSqlSettings));
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
             {
                 // optionsBuilder.EnableSensitiveDataLogging(true);

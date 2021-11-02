@@ -17,7 +17,7 @@ namespace eLearn.Modules.Courses.Api
 
         public void Register(IServiceCollection services)
         {
-            services.AddCore();
+            services.AddCore(Name);
         }
         
         public void Use(IConfiguration app)
