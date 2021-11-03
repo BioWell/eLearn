@@ -18,6 +18,7 @@ using Shared.Infrastructure.Hangfire;
 using Shared.Infrastructure.Interceptors;
 using Shared.Infrastructure.Serialization;
 using Shared.Infrastructure.Services.Email;
+using Shared.Infrastructure.Swagger;
 
 namespace Shared.Infrastructure
 {
@@ -60,6 +61,7 @@ namespace Shared.Infrastructure
                 endpoints.MapControllers();
                 endpoints.MapGet("/", context => context.Response.WriteAsync("eLearn API"));
             });
+            app.UseSwaggerDocumentation();
             return app;
         }
 
@@ -97,10 +99,9 @@ namespace Shared.Infrastructure
             services.AddHangfireServer();
 
             // 6. Doc & swagger
-            // ...
-
+            services.AddSwaggerDocumentation();
+            
             // 7. Error Handler
-            // ...
             services.AddSingleton<GlobalExceptionHandler>();
             services.AddCorsPolicy();
             return services;
