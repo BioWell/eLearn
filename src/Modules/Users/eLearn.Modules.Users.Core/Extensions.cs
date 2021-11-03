@@ -27,10 +27,13 @@ namespace eLearn.Modules.Users.Core
             // services.AddAutoMapper(Assembly.GetExecutingAssembly());
             var registrationOptions = services.GetOptions<RegistrationSettings>($"{moduleName}:RegistrationSettings");
             services.AddSingleton(registrationOptions);
-            services.AddDatabase()
-                .AddScoped<IUserRepository, UserRepository>();
+            
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ITokenService, TokenService>();
+            
+            services.AddDatabase()
+                .AddScoped<IUserRepository, UserRepository>();
+
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             return services;
         }

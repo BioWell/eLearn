@@ -3,7 +3,7 @@ using MediatR;
 
 namespace eLearn.Modules.Users.Core.Commands
 {
-    public class LoginRequest : IRequest
+    internal class LoginRequest : IRequest
     {
         [Required(ErrorMessage = "The {0} field is required.")]
         [EmailAddress]

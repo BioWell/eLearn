@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Dto.Identity.Tokens;
 using eLearn.Modules.Users.Core.Entities;
+using eLearn.Modules.Users.Core.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Infrastructure.Auth;
 using Shared.Infrastructure.Wrapper;
@@ -20,20 +23,46 @@ namespace eLearn.Modules.Users.Core.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly AuthSettings _authSettings;
+        private readonly IStringLocalizer<TokenService> _localizer;
         // private readonly IEventLogService _eventLog;
 
         public TokenService(UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager, 
-            AuthSettings authSettings)
+            AuthSettings authSettings, 
+            IStringLocalizer<TokenService> localizer)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _authSettings = authSettings;
+            _localizer = localizer;
         }
 
-        public Task<IResult<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress)
+        public async Task<IResult<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress)
         {
-            throw new System.NotImplementedException();
+            if (request is null)
+            {
+                throw new IdentityException(_localizer["Invalid Client Token."], statusCode: HttpStatusCode.Unauthorized);
+            }
+
+            var userPrincipal = GetPrincipalFromExpiredToken(request.Token);
+            string userEmail = userPrincipal.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new IdentityException(_localizer["User Not Found."], statusCode: HttpStatusCode.NotFound);
+            }
+
+            if (user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                throw new IdentityException(_localizer["Invalid Client Token."], statusCode: HttpStatusCode.Unauthorized);
+            }
+
+            string token = GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user, ipAddress));
+            user.RefreshToken = GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_authSettings.RefreshTokenExpirationInDays);
+            await _userManager.UpdateAsync(user);
+            var response = new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime);
+            return await Result<TokenResponse>.SuccessAsync(response);
         }
 
         public string GenerateRefreshToken()
@@ -47,6 +76,30 @@ namespace eLearn.Modules.Users.Core.Services
         public async Task<string> GenerateJwtAsync(AppUser user, string? ipAddress)
         {
             return GenerateEncryptedToken(GetSigningCredentials(), await GetClaimsAsync(user, ipAddress));
+        }
+        
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettings.Key)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RoleClaimType = ClaimTypes.Role,
+                ClockSkew = TimeSpan.Zero
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                !jwtSecurityToken.Header.Alg.Equals(
+                    SecurityAlgorithms.HmacSha256,
+                    StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new IdentityException(_localizer["Invalid Token."], statusCode: HttpStatusCode.Unauthorized);
+            }
+
+            return principal;
         }
 
         private SigningCredentials GetSigningCredentials()

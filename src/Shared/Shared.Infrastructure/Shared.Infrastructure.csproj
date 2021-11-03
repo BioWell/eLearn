@@ -42,5 +42,9 @@
       <Compile Remove="Wrapper\PaginatedResult.cs" />
       <None Include="Wrapper\PaginatedResult.cs" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Utilities" />
+    </ItemGroup>
     
 </Project>
