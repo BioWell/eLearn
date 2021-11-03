@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Commands;
 using eLearn.Modules.Users.Core.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eLearn.Modules.Users.Api.Controllers
@@ -18,7 +17,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         
         [HttpPost("register")]
         //[AllowAnonymous]
-        public async Task<ActionResult> SignUpAsync(RegisterRequest request)
+        public async Task<ActionResult> RegisterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["origin"];
             return Ok(await _identityService.RegisterAsync(request, origin));
@@ -31,23 +30,39 @@ namespace eLearn.Modules.Users.Api.Controllers
             return Ok(await _identityService.ConfirmEmailAsync(userId, code));
         }
         
-        // [HttpGet("confirm-phone-number")]
-        // // [AllowAnonymous]
-        // public async Task<IActionResult> ConfirmPhoneNumberAsync([FromQuery] string userId, [FromQuery] string code)
-        // {
-        //     return Ok(await _identityService.ConfirmPhoneNumberAsync(userId, code));
-        // }
-        //
-        // [HttpPost("sign-in")]
-        // [ProducesResponseType(StatusCodes.Status204NoContent)]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // public async Task<ActionResult<UserDetailsDto>> SignInAsync(SignIn command)
-        // {
-        //     // await _dispatcher.SendAsync(command.Bind(x => x.Id, Guid.NewGuid()));
-        //     // var jwt = _userRequestStorage.GetToken(command.Id);
-        //     // var appUser = await _dispatcher.QueryAsync(new GetUser {UserId = jwt.UserId});
-        //     // AddCookie(AccessTokenCookie, jwt.AccessToken);
-        //     return Ok(appUser);
-        // }
+        [HttpPost("login")]
+        //[AllowAnonymous]
+        public async Task<ActionResult> LoginAsync(LoginRequest request)
+        {
+            var token = await _identityService.LoginAsync(request, GenerateIpAddress());
+            return Ok(token);
+        }
+        
+        [HttpPost("forgot-password")]
+        //[AllowAnonymous]
+        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordRequest request)
+        {
+            var origin = Request.Headers["origin"];
+            return Ok(await _identityService.ForgotPasswordAsync(request, origin));
+        }
+
+        [HttpPost("reset-password")]
+        // [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            return Ok(await _identityService.ResetPasswordAsync(request));
+        }
+        
+        private string? GenerateIpAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                return Request.Headers["X-Forwarded-For"];
+            }
+            else
+            {
+                return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+            }
+        }
     }
 }

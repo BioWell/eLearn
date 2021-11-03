@@ -30,6 +30,7 @@ namespace eLearn.Modules.Users.Core
             services.AddDatabase()
                 .AddScoped<IUserRepository, UserRepository>();
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<ITokenService, TokenService>();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             return services;
         }
@@ -54,18 +55,19 @@ namespace eLearn.Modules.Users.Core
                     
                     identityOptions.User.RequireUniqueEmail = true;
 
-                    identityOptions.SignIn.RequireConfirmedEmail = true; // need to limit timespan?
-                    
+                    identityOptions.SignIn.RequireConfirmedEmail = true; 
+                    // TO DO
+                    // identityOptions.Tokens.EmailConfirmationTokenProvider = "emailconf";
                     identityOptions.Lockout.AllowedForNewUsers = true;
-                    identityOptions.Lockout.MaxFailedAccessAttempts = 5;
-                    identityOptions.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+                    identityOptions.Lockout.MaxFailedAccessAttempts = 3;
+                    identityOptions.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
                 })
                 .AddEntityFrameworkStores<UsersDbContext>()
                 .AddDefaultTokenProviders();
             
             // Develop purpose
             services.Configure<DataProtectionTokenProviderOptions>(options =>
-                options.TokenLifespan = TimeSpan.FromMinutes(1));
+                options.TokenLifespan = TimeSpan.FromMinutes(10));
 
             services.AddHangfire(x => x.UseSqlServerStorage(options.ConnectionString));
             return services;

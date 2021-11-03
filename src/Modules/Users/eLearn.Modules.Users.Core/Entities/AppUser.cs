@@ -7,32 +7,28 @@ namespace eLearn.Modules.Users.Core.Entities
 {
     internal class AppUser : IdentityUser<long>, IEntityWithTypedId<long>, IExtendableObject
     {
+        public const string SettingsDataKey = "Settings";
+
         public AppUser()
         {
             CreatedOn = DateTimeOffset.Now;
             LatestUpdatedOn = DateTimeOffset.Now;
         }
 
-        public const string SettingsDataKey = "Settings";
-
         public Guid UserGuid { get; set; } = Guid.NewGuid();
-        public string FullName { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
         public string? RefreshTokenHash { get; set; }
         public string? Culture { get; set; }
         public string ExtensionData { get; set; } = string.Empty;
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset LatestUpdatedOn { get; set; }
-        public long? VendorId { get; set; }
-        public bool IsActive { get; set; }
-
-        public string ImageUrl { get; set; } = string.Empty;
-        
         public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
-        public DateTime? RefreshTokenExpiryTime { get; set; }
-        
         public virtual IList<AppUserRole>? UserRoles { get; set; }
-        
         public virtual IList<UserAddress>? Addresses { get; set; }
         // public long? DefaultShippingAddressId { get; set; }
         // public virtual UserAddress? DefaultShippingAddress { get; set; }

@@ -10,7 +10,8 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
         {
             builder.Property(x => x.Culture).HasMaxLength(450);
             builder.Property(x => x.RefreshTokenHash).HasMaxLength(450);
-            builder.Property(x => x.FullName).IsRequired().HasMaxLength(450);
+            builder.Property(x => x.FirstName).IsRequired().HasMaxLength(450);
+            builder.Property(x => x.LastName).IsRequired().HasMaxLength(450);
             
             builder.HasMany(x => x.UserRoles)
                 .WithOne(x => x.User)

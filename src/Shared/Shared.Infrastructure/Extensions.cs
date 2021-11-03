@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Shared.Infrastructure.Api;
+using Shared.Infrastructure.Auth;
 using Shared.Infrastructure.Cors;
 using Shared.Infrastructure.Exceptions;
 using Shared.Infrastructure.Hangfire;
@@ -120,6 +121,8 @@ namespace Shared.Infrastructure
             services.AddSingleton(appOptions);
             var mailOptions = services.GetOptions<MailSettings>(nameof(MailSettings));
             services.AddSingleton(mailOptions);
+            var authOptions = services.GetOptions<AuthSettings>(nameof(AuthSettings));
+            services.AddSingleton(authOptions);
             services.AddTransient<IMailService, SmtpMailService>();
             services.AddScoped<IJobService, HangfireService>();
             return services;
