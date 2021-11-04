@@ -2,10 +2,10 @@
 
 namespace eLearn.Modules.Users.Api.Controllers
 {
-    [Route(BasePath)]
+    [Route(BasePath + "/[controller]")]
     internal sealed class UsersController: BaseController
     {
         [HttpGet]
-        public ActionResult<string> Get() => Ok("Users module");
+        public ActionResult<string> Get() => Ok("Users Controllers");
     }
 }

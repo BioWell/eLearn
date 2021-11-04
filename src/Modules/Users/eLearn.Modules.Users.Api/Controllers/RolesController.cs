@@ -6,7 +6,7 @@ using Shared.Infrastructure.Auth;
 
 namespace eLearn.Modules.Users.Api.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route(BasePath)]
+    [Route(BasePath + "/[controller]")]
     internal sealed class RolesController : BaseController
     {
         private readonly IRoleService _roleService;
@@ -15,9 +15,12 @@ namespace eLearn.Modules.Users.Api.Controllers
         {
             _roleService = roleService;
         }
-
+        //
+        // [HttpGet]   
+        // public ActionResult<string> Get() => Ok("Roles Controller");
+        
         [HttpGet]
-        [Authorize(Policy = Permissions.Roles.View)]
+        // [Authorize(Policy = Permissions.Roles.View)]
         public async Task<IActionResult> GetAllAsync()
         {
             var roles = await _roleService.GetAllAsync();

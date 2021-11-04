@@ -6,11 +6,10 @@ using eLearn.Modules.Users.Core.Commands;
 using eLearn.Modules.Users.Core.Dto.Identity.Roles;
 using eLearn.Modules.Users.Core.Entities;
 using eLearn.Modules.Users.Core.Exceptions;
-using eLearn.Modules.Users.Core.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Shared.Infrastructure.Constants;
+using Shared.Infrastructure.Auth;
 using Shared.Infrastructure.Utilities;
 using Shared.Infrastructure.Wrapper;
 

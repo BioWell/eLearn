@@ -1,4 +1,4 @@
-﻿namespace Shared.Infrastructure.Constants
+﻿namespace Shared.Infrastructure.Auth
 {
     public static class RoleConstants
     {

@@ -36,11 +36,13 @@ namespace eLearn.Modules.Users.Core
             services.AddHttpContextAccessor();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            var registrationOptions = services.GetOptions<RegistrationSettings>($"{moduleName}:" + nameof(RegistrationSettings));
+            var registrationOptions =
+                services.GetOptions<RegistrationSettings>($"{moduleName}:" + nameof(RegistrationSettings));
             services.AddSingleton(registrationOptions);
 
-            services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IIdentityService, IdentityService>()
+                .AddTransient<IRoleService, RoleService>()
+                .AddTransient<ITokenService, TokenService>();
 
             services.AddDatabase()
                 .AddScoped<IUserRepository, UserRepository>();

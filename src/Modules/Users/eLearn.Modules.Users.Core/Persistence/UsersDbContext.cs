@@ -5,6 +5,8 @@ using eLearn.Modules.Users.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Utilities;
+using Shared.Infrastructure.Auth;
 
 namespace eLearn.Modules.Users.Core.Persistence
 {
@@ -25,7 +27,7 @@ namespace eLearn.Modules.Users.Core.Persistence
             builder.HasDefaultSchema(Schema);
             base.OnModelCreating(builder);
             ApplyIdentityConfiguration(builder);
-            //SeedData(builder);
+            SeedData(builder);
         }
 
         public void ApplyIdentityConfiguration(ModelBuilder builder)
@@ -67,43 +69,43 @@ namespace eLearn.Modules.Users.Core.Persistence
                 {
                     Id = 1L,
                     ConcurrencyStamp = "4776a1b2-dbe4-4056-82ec-8bed211d1454",
-                    Name = "SuperAdmin",
-                    NormalizedName = "SUPERADMIN"
+                    Name = RoleConstants.SuperAdmin,
+                    NormalizedName = Strings.ToUpperCase(RoleConstants.SuperAdmin)
                 },
                 new AppRole
                 {
                     Id = 2L,
                     ConcurrencyStamp = "00d172be-03a0-4856-8b12-26d63fcf4374",
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
+                    Name = RoleConstants.Admin,
+                    NormalizedName = Strings.ToUpperCase(RoleConstants.Admin)
                 },
                 new AppRole
                 {
                     Id = 3L,
                     ConcurrencyStamp = "00d172be-03a0-4856-8b12-26d645cf4374",
-                    Name = "Students",
-                    NormalizedName = "STUDENTS"
+                    Name = RoleConstants.Students,
+                    NormalizedName = Strings.ToUpperCase(RoleConstants.Students)
                 },
                 new AppRole
                 {
                     Id = 4L,
                     ConcurrencyStamp = "d4754388-8355-4018-b728-218018836817",
-                    Name = "Guest",
-                    NormalizedName = "GUEST"
+                    Name = RoleConstants.Guest,
+                    NormalizedName = Strings.ToUpperCase(RoleConstants.Guest)
                 },
                 new AppRole
                 {
                     Id = 5L,
                     ConcurrencyStamp = "d4754388-8355-4018-b728-218018896817",
-                    Name = "Teacher",
-                    NormalizedName = "TEACHER"
+                    Name = RoleConstants.Teacher,
+                    NormalizedName = Strings.ToUpperCase(RoleConstants.Teacher)
                 },
                 new AppRole
                 {
                     Id = 6L,
                     ConcurrencyStamp = "d4754388-8355-4018-b728-218338836817",
-                    Name = "Staff",
-                    NormalizedName = "STAFF"
+                    Name = RoleConstants.Staff,
+                    NormalizedName = Strings.ToUpperCase(RoleConstants.Staff)
                 }
             );
 
@@ -116,7 +118,7 @@ namespace eLearn.Modules.Users.Core.Persistence
                     CreatedOn = new DateTimeOffset(new DateTime(2021, 10, 31, 4, 33, 39, 189, DateTimeKind.Unspecified),
                         new TimeSpan(0, 7, 0, 0, 0)),
                     Email = "system@biowellacademy.com",
-                    EmailConfirmed = false,
+                    EmailConfirmed = true,
                     FirstName = "Bill",
                     LastName = "Yao",
                     IsActive = true,
@@ -124,14 +126,15 @@ namespace eLearn.Modules.Users.Core.Persistence
                     NormalizedEmail = "SYSTEM@BIOWELLACADEMY.COM",
                     NormalizedUserName = "SYSTEM@BIOWELLACADEMY.COM",
                     PasswordHash =
-                        "AQAAAAEAACcQAAAAEAEqSCV8Bpg69irmeg8N86U503jGEAYf75fBuzvL00/mr/FGEsiUqfR0rWBbBUwqtw==",
+                        "AQAAAAEAACcQAAAAEL2tZZGiftZt3LUZjK4VWKo9sieuP2LDgUpaKfX4J9EgvKMai3trjbmvENBQCGDJjw==",
                     PhoneNumberConfirmed = false,
                     SecurityStamp = "a9565acb-cee6-425f-9833-419a793f5fba",
                     TwoFactorEnabled = false,
                     LatestUpdatedOn =
-                        new DateTimeOffset(new DateTime(2018, 5, 29, 4, 33, 39, 189, DateTimeKind.Unspecified),
+                        new DateTimeOffset(new DateTime(2021, 11, 1, 4, 33, 39, 189, DateTimeKind.Unspecified),
                             new TimeSpan(0, 7, 0, 0, 0)),
-                    UserGuid = new Guid("5f72f83b-7436-4221-869c-1b69b2e23aae"), UserName = "system@simplcommerce.com"
+                    UserGuid = new Guid("5f72f83b-7436-4221-869c-1b69b2e23aae"), 
+                    UserName = "system@biowellacademy.com"
                 },
                 new AppUser
                 {
@@ -141,25 +144,26 @@ namespace eLearn.Modules.Users.Core.Persistence
                     CreatedOn = new DateTimeOffset(new DateTime(2021, 10, 31, 4, 33, 39, 190, DateTimeKind.Unspecified),
                         new TimeSpan(0, 7, 0, 0, 0)),
                     Email = "admin@biowellacademy.com",
-                    EmailConfirmed = false,
+                    EmailConfirmed = true,
                     FirstName = "Frank",
                     LastName = "Huang",
-                    IsActive = false,
+                    IsActive = true,
                     LockoutEnabled = true,
                     NormalizedEmail = "ADMIN@BIOWELLACADEMY.COM",
                     NormalizedUserName = "ADMIN@BIOWELLACADEMY.COM",
                     PasswordHash =
-                        "AQAAAAEAACcQAAAAEAEqSCV8Bpg69irmeg8N86U503jGEAYf75fBuzvL00/mr/FGEsiUqfR0rWBbBUwqtw==",
+                        "AQAAAAEAACcQAAAAEL2tZZGiftZt3LUZjK4VWKo9sieuP2LDgUpaKfX4J9EgvKMai3trjbmvENBQCGDJjw==",
                     PhoneNumberConfirmed = false,
                     SecurityStamp = "d6847450-47f0-4c7a-9fed-0c66234bf61f",
                     TwoFactorEnabled = false,
                     LatestUpdatedOn =
-                        new DateTimeOffset(new DateTime(2018, 5, 29, 4, 33, 39, 190, DateTimeKind.Unspecified),
+                        new DateTimeOffset(new DateTime(2021, 11, 2, 4, 33, 39, 190, DateTimeKind.Unspecified),
                             new TimeSpan(0, 7, 0, 0, 0)),
-                    UserGuid = new Guid("ed8210c3-24b0-4823-a744-80078cf12eb4"), UserName = "admin@simplcommerce.com"
+                    UserGuid = new Guid("ed8210c3-24b0-4823-a744-80078cf12eb4"),
+                    UserName = "admin@biowellacademy.com"
                 }
             );
-
+/*
             builder.Entity<AppUserRole>().HasData(
                 new AppUserRole {UserId = 1, RoleId = 1},
                 new AppUserRole {UserId = 2, RoleId = 1}
@@ -200,7 +204,7 @@ namespace eLearn.Modules.Users.Core.Persistence
 
             builder.Entity<Address>().HasData(
                 new Address(1) {AddressLine1 = "李冰路 43号", ContactName = "杨志龙", CountryId = "CN", StateOrProvinceId = 1}
-            );
+            );*/
         }
     }
 }
