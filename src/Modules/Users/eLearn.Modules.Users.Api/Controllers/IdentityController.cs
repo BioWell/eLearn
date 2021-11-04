@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Commands;
+using eLearn.Modules.Users.Core.Dto.Identity.Tokens;
 using eLearn.Modules.Users.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace eLearn.Modules.Users.Api.Controllers
     internal sealed class IdentityController : BaseController
     {
         private readonly IIdentityService _identityService;
-
-        public IdentityController(IIdentityService identityService)
+        private readonly ITokenService _tokenService;
+        public IdentityController(IIdentityService identityService, 
+            ITokenService tokenService)
         {
             _identityService = identityService;
+            _tokenService = tokenService;
         }
         
         [HttpPost("register")]
@@ -24,13 +27,6 @@ namespace eLearn.Modules.Users.Api.Controllers
             return Ok(await _identityService.RegisterAsync(request, origin));
         }
         
-        [HttpGet("confirm-email")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
-        {
-            return Ok(await _identityService.ConfirmEmailAsync(userId, code));
-        }
-        
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult> LoginAsync(LoginRequest request)
@@ -39,6 +35,13 @@ namespace eLearn.Modules.Users.Api.Controllers
             return Ok(token);
         }
         
+        [HttpGet("confirm-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
+        {
+            return Ok(await _identityService.ConfirmEmailAsync(userId, code));
+        }
+
         [HttpPost("forgot-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordRequest request)
@@ -54,17 +57,25 @@ namespace eLearn.Modules.Users.Api.Controllers
             
             return Ok(await _identityService.ResetPasswordAsync(request));
         }
-
-        // private string? GenerateIpAddress()
-        // {
-        //     if (Request.Headers.ContainsKey("X-Forwarded-For"))
-        //     {
-        //         return Request.Headers["X-Forwarded-For"];
-        //     }
-        //     else
-        //     {
-        //         return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
-        //     }
-        // }
+        
+        [HttpPost("refresh-token")]
+        [AllowAnonymous]
+        public async Task<ActionResult> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var response = await _tokenService.RefreshTokenAsync(request, GenerateIpAddress());
+            return Ok(response);
+        }
+        
+        private string? GenerateIpAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                return Request.Headers["X-Forwarded-For"];
+            }
+            else
+            {
+                return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+            }
+        }
     }
 }

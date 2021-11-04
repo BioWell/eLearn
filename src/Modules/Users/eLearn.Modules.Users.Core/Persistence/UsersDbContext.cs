@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using eLearn.Modules.Users.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -10,20 +12,40 @@ namespace eLearn.Modules.Users.Core.Persistence
         IdentityUserClaim<long>, AppUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>
     {
         internal string Schema => "Users";
-        
+
         public UsersDbContext(DbContextOptions options) : base(options)
         {
         }
-        
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.HasDefaultSchema(Schema);
             base.OnModelCreating(builder);
-            // builder.ApplyConfiguration(new AppUserCfg());
-            // ...
-            //
+            ApplyIdentityConfiguration(builder);
+            
+            //SeedData(builder);
+        }
+
+        public void ApplyIdentityConfiguration(ModelBuilder builder)
+        {
+            foreach (var property in builder.Model.GetEntityTypes()
+                .SelectMany(t => t.GetProperties())
+                .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+            {
+                property.SetColumnType("decimal(23,2)");
+            }
+
             builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-            SeedData(builder);
+
+            builder.Entity<IdentityUserLogin<long>>(b => { b.ToTable("Core_UserLogin"); });
+
+            builder.Entity<IdentityUserToken<long>>(b => { b.ToTable("Core_UserToken"); });
+
+            builder.Entity<IdentityUserClaim<long>>(b =>
+            {
+                b.HasKey(x => x.Id);
+                b.ToTable("Core_UserClaim");
+            });
         }
 
         private void SeedData(ModelBuilder builder)
@@ -76,7 +98,7 @@ namespace eLearn.Modules.Users.Core.Persistence
             builder.Entity<AppUser>().HasData(
                 new AppUser
                 {
-                    Id = 1L, 
+                    Id = 1L,
                     AccessFailedCount = 0,
                     ConcurrencyStamp = "101cd6ae-a8ef-4a37-97fd-04ac2dd630e4",
                     CreatedOn = new DateTimeOffset(new DateTime(2021, 10, 31, 4, 33, 39, 189, DateTimeKind.Unspecified),
@@ -101,7 +123,7 @@ namespace eLearn.Modules.Users.Core.Persistence
                 },
                 new AppUser
                 {
-                    Id = 2L, 
+                    Id = 2L,
                     AccessFailedCount = 0,
                     ConcurrencyStamp = "c83afcbc-312c-4589-bad7-8686bd4754c0",
                     CreatedOn = new DateTimeOffset(new DateTime(2021, 10, 31, 4, 33, 39, 190, DateTimeKind.Unspecified),
@@ -134,26 +156,26 @@ namespace eLearn.Modules.Users.Core.Persistence
             builder.Entity<Country>().HasData(
                 new Country("CN")
                 {
-                    Code3 = "CHN", 
-                    Name = "China", 
-                    IsBillingEnabled = true, 
+                    Code3 = "CHN",
+                    Name = "China",
+                    IsBillingEnabled = true,
                     IsShippingEnabled = true,
-                    IsCityEnabled = false, 
-                    IsZipCodeEnabled = false, 
+                    IsCityEnabled = false,
+                    IsZipCodeEnabled = false,
                     IsDistrictEnabled = true
                 },
                 new Country("US")
                 {
-                    Code3 = "USA", 
-                    Name = "United States", 
-                    IsBillingEnabled = true, 
+                    Code3 = "USA",
+                    Name = "United States",
+                    IsBillingEnabled = true,
                     IsShippingEnabled = true,
-                    IsCityEnabled = true, 
-                    IsZipCodeEnabled = true, 
+                    IsCityEnabled = true,
+                    IsZipCodeEnabled = true,
                     IsDistrictEnabled = false
                 }
             );
- 
+
             builder.Entity<StateOrProvince>().HasData(
                 new StateOrProvince(1) {CountryId = "CN", Name = "上海", Type = "直辖市"},
                 new StateOrProvince(2) {CountryId = "US", Name = "Washington", Code = "WA"}

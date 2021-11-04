@@ -9,6 +9,6 @@ namespace eLearn.Modules.Users.Core.Services
     {
         string GenerateRefreshToken();
         Task<string> GenerateJwtAsync(AppUser user, string? ipAddress);
-        Task<IResult<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress);
+        Task<IResult<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string? ipAddress);
     }
 }

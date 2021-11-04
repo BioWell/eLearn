@@ -14,12 +14,7 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
             builder.Property(e => e.AddressLine2).HasMaxLength(450);
             builder.Property(e => e.City).HasMaxLength(450);
             builder.Property(e => e.ZipCode).HasMaxLength(450);
-            //
-            // builder.HasMany(e => e.Users)
-            //     .WithOne(e => e.Address)
-            //     .HasForeignKey(ur => ur.AddressId)
-            //     .OnDelete(DeleteBehavior.Restrict);
-            //
+
             builder.HasOne(o => o.Country)
                 .WithMany()
                 .HasForeignKey(f => f.CountryId)

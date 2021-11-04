@@ -11,9 +11,9 @@ namespace eLearn.Modules.Users.Core.Persistence.Configurations
             builder.HasMany(x => x.UserRoles)
                 .WithOne(x => x.Role)
                 .HasForeignKey(x => x.RoleId)
-                .IsRequired()
+                // .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             builder.ToTable("Core_Role");
         }
     }

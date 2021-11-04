@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 using eLearn.Modules.Users.Core.Entities;
+using eLearn.Modules.Users.Core.Exceptions;
+using eLearn.Modules.Users.Core.Permissions;
 using eLearn.Modules.Users.Core.Persistence;
 using eLearn.Modules.Users.Core.Repositories;
 using eLearn.Modules.Users.Core.Services;
@@ -12,7 +18,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Shared.Infrastructure;
 using Shared.Infrastructure.Persistence.SqlServer;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Shared.Infrastructure.Auth;
 
 [assembly: InternalsVisibleTo("eLearn.Modules.Users.Api")]
 
@@ -25,12 +36,12 @@ namespace eLearn.Modules.Users.Core
             services.AddHttpContextAccessor();
             services.AddMediatR(Assembly.GetExecutingAssembly());
             // services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            var registrationOptions = services.GetOptions<RegistrationSettings>($"{moduleName}:RegistrationSettings");
+            var registrationOptions = services.GetOptions<RegistrationSettings>($"{moduleName}:" + nameof(RegistrationSettings));
             services.AddSingleton(registrationOptions);
-            
+
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ITokenService, TokenService>();
-            
+
             services.AddDatabase()
                 .AddScoped<IUserRepository, UserRepository>();
 
@@ -43,7 +54,7 @@ namespace eLearn.Modules.Users.Core
             var options = services.GetOptions<MsSqlSettings>(nameof(MsSqlSettings));
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
             {
-                // optionsBuilder.EnableSensitiveDataLogging(true);
+                optionsBuilder.EnableSensitiveDataLogging(true);
                 optionsBuilder.UseSqlServer(options.ConnectionString);
             });
 
@@ -55,10 +66,10 @@ namespace eLearn.Modules.Users.Core
                     identityOptions.Password.RequireUppercase = false;
                     identityOptions.Password.RequireLowercase = false;
                     identityOptions.Password.RequiredUniqueChars = 0;
-                    
+
                     identityOptions.User.RequireUniqueEmail = true;
 
-                    identityOptions.SignIn.RequireConfirmedEmail = true; 
+                    identityOptions.SignIn.RequireConfirmedEmail = true;
                     // TO DO
                     // identityOptions.Tokens.EmailConfirmationTokenProvider = "emailconf";
                     identityOptions.Lockout.AllowedForNewUsers = true;
@@ -67,12 +78,68 @@ namespace eLearn.Modules.Users.Core
                 })
                 .AddEntityFrameworkStores<UsersDbContext>()
                 .AddDefaultTokenProviders();
-            
+
+            services.AddPermissions();
+            services.AddJwtAuthentication();
+
             // Develop purpose
             services.Configure<DataProtectionTokenProviderOptions>(options =>
                 options.TokenLifespan = TimeSpan.FromMinutes(10));
 
             services.AddHangfire(x => x.UseSqlServerStorage(options.ConnectionString));
+            return services;
+        }
+
+        private static IServiceCollection AddPermissions(this IServiceCollection services)
+        {
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>()
+                .AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            return services;
+        }
+
+        private static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
+        {
+            var jwtSettings = services.GetOptions<AuthSettings>(nameof(AuthSettings));
+            byte[] key = Encoding.ASCII.GetBytes(jwtSettings.Key);
+            services
+                .AddAuthentication(authentication =>
+                {
+                    authentication.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    authentication.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(bearer =>
+                {
+                    bearer.RequireHttpsMetadata = false;
+                    bearer.SaveToken = true;
+                    bearer.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        RoleClaimType = ClaimTypes.Role,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                    bearer.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse();
+                            if (!context.Response.HasStarted)
+                            {
+                                throw new IdentityException("You are not Authorized.",
+                                    statusCode: HttpStatusCode.Unauthorized);
+                            }
+
+                            return Task.CompletedTask;
+                        },
+                        OnForbidden = context =>
+                        {
+                            throw new IdentityException("You are not authorized to access this resource.",
+                                statusCode: HttpStatusCode.Forbidden);
+                        },
+                    };
+                });
             return services;
         }
     }

@@ -7,8 +7,6 @@ namespace eLearn.Modules.Users.Core.Entities
 {
     internal class AppUser : IdentityUser<long>, IEntityWithTypedId<long>, IExtendableObject
     {
-        public const string SettingsDataKey = "Settings";
-
         public AppUser()
         {
             CreatedOn = DateTimeOffset.Now;
@@ -30,6 +28,8 @@ namespace eLearn.Modules.Users.Core.Entities
 
         public virtual IList<AppUserRole>? UserRoles { get; set; }
         public virtual IList<UserAddress>? Addresses { get; set; }
+        
+        
         // public long? DefaultShippingAddressId { get; set; }
         // public virtual UserAddress? DefaultShippingAddress { get; set; }
         // public long? DefaultBillingAddressId { get; set; }

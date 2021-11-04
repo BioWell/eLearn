@@ -37,7 +37,7 @@ namespace eLearn.Modules.Users.Core.Services
             _localizer = localizer;
         }
 
-        public async Task<IResult<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string ipAddress)
+        public async Task<IResult<TokenResponse>> RefreshTokenAsync(RefreshTokenRequest request, string? ipAddress)
         {
             if (request is null)
             {
