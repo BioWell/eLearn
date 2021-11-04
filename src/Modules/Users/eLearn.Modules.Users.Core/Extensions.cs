@@ -35,7 +35,7 @@ namespace eLearn.Modules.Users.Core
         {
             services.AddHttpContextAccessor();
             services.AddMediatR(Assembly.GetExecutingAssembly());
-            // services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             var registrationOptions = services.GetOptions<RegistrationSettings>($"{moduleName}:" + nameof(RegistrationSettings));
             services.AddSingleton(registrationOptions);
 

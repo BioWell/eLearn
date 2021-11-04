@@ -8,10 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eLearn.Modules.Users.Core.Persistence
 {
-    internal class UsersDbContext : IdentityDbContext<AppUser, AppRole, long,
-        IdentityUserClaim<long>, AppUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>
+    internal sealed class UsersDbContext : IdentityDbContext<
+        AppUser, AppRole, long,
+        IdentityUserClaim<long>,
+        AppUserRole, IdentityUserLogin<long>,
+        AppRoleClaim, IdentityUserToken<long>>
     {
-        internal string Schema => "Users";
+        internal string Schema => "Identity";
 
         public UsersDbContext(DbContextOptions options) : base(options)
         {
@@ -22,20 +25,19 @@ namespace eLearn.Modules.Users.Core.Persistence
             builder.HasDefaultSchema(Schema);
             base.OnModelCreating(builder);
             ApplyIdentityConfiguration(builder);
-            
             //SeedData(builder);
         }
 
         public void ApplyIdentityConfiguration(ModelBuilder builder)
         {
+            builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+
             foreach (var property in builder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetProperties())
                 .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
             {
                 property.SetColumnType("decimal(23,2)");
             }
-
-            builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
             builder.Entity<IdentityUserLogin<long>>(b => { b.ToTable("Core_UserLogin"); });
 
@@ -45,6 +47,16 @@ namespace eLearn.Modules.Users.Core.Persistence
             {
                 b.HasKey(x => x.Id);
                 b.ToTable("Core_UserClaim");
+            });
+
+            builder.Entity<AppRoleClaim>(entity =>
+            {
+                entity.ToTable(name: "Core_RoleClaims");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.RoleClaims)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
