@@ -21,7 +21,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpGet]
-        // [Authorize(Policy = Permissions.Roles.View)]
+        [Authorize(Policy = Permissions.Roles.View)]
         public async Task<IActionResult> GetAllAsync()
         {
             var roles = await _roleService.GetAllAsync();

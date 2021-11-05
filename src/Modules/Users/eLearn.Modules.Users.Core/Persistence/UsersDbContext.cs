@@ -164,12 +164,12 @@ namespace eLearn.Modules.Users.Core.Persistence
                     UserName = "admin@biowellacademy.com"
                 }
             );
-/*
+
             builder.Entity<AppUserRole>().HasData(
                 new AppUserRole {UserId = 1, RoleId = 1},
                 new AppUserRole {UserId = 2, RoleId = 1}
             );
-
+/*
             builder.Entity<Country>().HasData(
                 new Country("CN")
                 {

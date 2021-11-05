@@ -16,6 +16,7 @@ using Microsoft.Extensions.Localization;
 using Shared.Infrastructure.Auth;
 using Shared.Infrastructure.Hangfire;
 using Shared.Infrastructure.Services.Email;
+using Shared.Infrastructure.Utilities;
 using Shared.Infrastructure.Wrapper;
 
 namespace eLearn.Modules.Users.Core.Services
@@ -23,6 +24,7 @@ namespace eLearn.Modules.Users.Core.Services
     internal class IdentityService : IIdentityService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
         private readonly IJobService _jobService;
         private readonly IMailService _mailService;
         private readonly MailSettings _mailSettings;
@@ -39,7 +41,8 @@ namespace eLearn.Modules.Users.Core.Services
             IStringLocalizer<IdentityService> localizer,
             RegistrationSettings registrationSettings,
             ITokenService tokenService,
-            AuthSettings authSettings)
+            AuthSettings authSettings, 
+            RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
             _jobService = jobService;
@@ -49,6 +52,7 @@ namespace eLearn.Modules.Users.Core.Services
             _registrationSettings = registrationSettings;
             _tokenService = tokenService;
             _authSettings = authSettings;
+            _roleManager = roleManager;
         }
 
         public async Task<IResult> RegisterAsync(RegisterRequest request, string origin)
@@ -104,7 +108,15 @@ namespace eLearn.Modules.Users.Core.Services
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, RoleConstants.Guest);
+                await _userManager.AddToRoleAsync(user, RoleConstants.SuperAdmin); // TO DO 
+                
+                var superAdminRoleInDb = await _roleManager.FindByNameAsync(RoleConstants.SuperAdmin);
+                
+                foreach (string permission in typeof(Shared.Infrastructure.Auth.Permissions).GetNestedClassesStaticStringValues())
+                {
+                    await _roleManager.AddPermissionClaimAsync(superAdminRoleInDb, permission);
+                }
+                
                 if (!_mailSettings.EnableVerification)
                 {
                     return await Result<string>.SuccessAsync(user.Id.ToString(),
@@ -292,7 +304,7 @@ namespace eLearn.Modules.Users.Core.Services
         {
             string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            string route = "api/identity/confirm-email/";
+            string route = "api/users/identity/confirm-email/";
             var endpointUri = new Uri(string.Concat($"{origin}/", route));
             string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id.ToString());
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
