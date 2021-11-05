@@ -8,6 +8,6 @@ namespace eLearn.Modules.Users.Api.Controllers
     [ProducesDefaultContentType]
     internal abstract class BaseController : CommonBaseController
     {
-        protected internal new const string BasePath = CommonBaseController.BasePath + "/identity";
+        protected internal new const string BasePath = CommonBaseController.BasePath + "/users";
     }
 }

@@ -21,7 +21,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Infrastructure.Auth;
 
@@ -42,6 +41,9 @@ namespace eLearn.Modules.Users.Core
 
             services.AddTransient<IIdentityService, IdentityService>()
                 .AddTransient<IRoleService, RoleService>()
+                .AddTransient<IUserService, UserService>()
+                .AddTransient<ICurrentUser, CurrentUser>()
+                .AddTransient<IRoleClaimService, RoleClaimService>()
                 .AddTransient<ITokenService, TokenService>();
 
             services.AddDatabase()
@@ -55,12 +57,12 @@ namespace eLearn.Modules.Users.Core
         {
             var options = services.GetOptions<MsSqlSettings>(nameof(MsSqlSettings));
             services.AddDbContext<UsersDbContext>(optionsBuilder =>
-            {
-                optionsBuilder.EnableSensitiveDataLogging(true);
-                optionsBuilder.UseSqlServer(options.ConnectionString);
-            });
-
-            services.AddIdentity<AppUser, AppRole>(identityOptions =>
+                {
+                    //optionsBuilder.EnableSensitiveDataLogging(true);
+                    optionsBuilder.UseSqlServer(options.ConnectionString);
+                })
+                .AddScoped<IUsersDbContext>(provider => provider.GetService<UsersDbContext>() ?? throw new InvalidOperationException())
+                .AddIdentity<AppUser, AppRole>(identityOptions =>
                 {
                     identityOptions.Password.RequireDigit = false;
                     identityOptions.Password.RequiredLength = 4;

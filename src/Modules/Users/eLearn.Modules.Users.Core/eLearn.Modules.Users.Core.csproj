@@ -15,8 +15,4 @@
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-rc.2.21480.10" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Commands\Handlers" />
-    </ItemGroup>
-
 </Project>

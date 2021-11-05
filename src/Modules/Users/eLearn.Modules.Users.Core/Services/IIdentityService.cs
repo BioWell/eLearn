@@ -7,7 +7,7 @@ namespace eLearn.Modules.Users.Core.Services
     internal interface IIdentityService
     {
         Task<IResult> RegisterAsync(RegisterRequest request, string origin);
-        
+
         Task<IResult> LoginAsync(LoginRequest request, string? ipAddress);
 
         Task<IResult<string>> ConfirmEmailAsync(string userId, string code);
@@ -15,5 +15,7 @@ namespace eLearn.Modules.Users.Core.Services
         Task<IResult> ForgotPasswordAsync(ForgotPasswordRequest request, string origin);
 
         Task<IResult> ResetPasswordAsync(ResetPasswordRequest request);
+
+        Task<IResult> ChangePasswordAsync(ChangePasswordRequest request);
     }
 }

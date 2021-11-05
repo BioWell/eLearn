@@ -1,8 +1,10 @@
-﻿namespace Shared.Infrastructure.Auth
+﻿using System;
+
+namespace Shared.Infrastructure.Auth
 {
     public class AuthSettings
     {
-        public string Key { get; set; } = string.Empty;
+        public string Key { get; set; } = String.Empty;
 
         public int TokenExpirationInMinutes { get; set; }
 

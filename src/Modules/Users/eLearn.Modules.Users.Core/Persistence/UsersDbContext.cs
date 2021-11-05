@@ -14,7 +14,8 @@ namespace eLearn.Modules.Users.Core.Persistence
         AppUser, AppRole, long,
         IdentityUserClaim<long>,
         AppUserRole, IdentityUserLogin<long>,
-        AppRoleClaim, IdentityUserToken<long>>
+        AppRoleClaim, IdentityUserToken<long>>,
+        IUsersDbContext
     {
         internal string Schema => "Identity";
 

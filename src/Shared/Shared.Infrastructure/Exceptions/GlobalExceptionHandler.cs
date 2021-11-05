@@ -48,7 +48,7 @@ namespace Shared.Infrastructure.Exceptions
                 }
 
                 var responseModel = await ErrorResult<string>.ReturnErrorAsync(exception.Message);
-                responseModel.Source = exception.Source ?? string.Empty;
+                responseModel.Source = exception.Source ?? String.Empty;
                 responseModel.Exception = exception.Message;
                 _logger.LogError(exception.Message);
                 switch (exception)
@@ -67,7 +67,7 @@ namespace Shared.Infrastructure.Exceptions
                         break;
                 }
 
-                string result = string.Empty;
+                string result = String.Empty;
                 if (_serializationSettings.UseNewtonsoftJson)
                 {
                     result = _jsonSerializer.Serialize(responseModel, new JsonSerializerSettingsOptions

@@ -17,7 +17,6 @@ using Shared.Infrastructure.Auth;
 using Shared.Infrastructure.Hangfire;
 using Shared.Infrastructure.Services.Email;
 using Shared.Infrastructure.Wrapper;
-using IResult = Shared.Infrastructure.Wrapper.IResult;
 
 namespace eLearn.Modules.Users.Core.Services
 {
@@ -37,8 +36,8 @@ namespace eLearn.Modules.Users.Core.Services
             IJobService jobService,
             IMailService mailService,
             MailSettings mailSettings,
-            IStringLocalizer<IdentityService> localizer, 
-            RegistrationSettings registrationSettings, 
+            IStringLocalizer<IdentityService> localizer,
+            RegistrationSettings registrationSettings,
             ITokenService tokenService,
             AuthSettings authSettings)
         {
@@ -58,7 +57,7 @@ namespace eLearn.Modules.Users.Core.Services
             {
                 throw new IdentityException(string.Format(_localizer["origin is empty."]));
             }
-            
+
             if (!_registrationSettings.Enabled)
             {
                 throw new IdentityException(string.Format(_localizer["System SignUp Disabled."]));
@@ -76,7 +75,7 @@ namespace eLearn.Modules.Users.Core.Services
             {
                 throw new IdentityException(string.Format(_localizer["Username {0} is already taken."], request.Email));
             }
-            
+
             var user = new AppUser
             {
                 UserName = request.Email,
@@ -86,19 +85,21 @@ namespace eLearn.Modules.Users.Core.Services
                 PhoneNumber = request.PhoneNumber,
                 IsActive = true
             };
-            
+
             if (request.EmailConfirmed) user.EmailConfirmed = true;
             if (request.PhoneNumberConfirmed) user.PhoneNumberConfirmed = true;
-            
+
             if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
             {
-                var userWithSamePhoneNumber = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == request.PhoneNumber);
+                var userWithSamePhoneNumber =
+                    await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == request.PhoneNumber);
                 if (userWithSamePhoneNumber != null)
                 {
-                    throw new IdentityException(string.Format(_localizer["Phone number {0} is already registered."], request.PhoneNumber));
+                    throw new IdentityException(string.Format(_localizer["Phone number {0} is already registered."],
+                        request.PhoneNumber));
                 }
             }
-            
+
             // user.AddDomainEvent(new UserRegisteredEvent(user));
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
@@ -106,11 +107,12 @@ namespace eLearn.Modules.Users.Core.Services
                 await _userManager.AddToRoleAsync(user, RoleConstants.Guest);
                 if (!_mailSettings.EnableVerification)
                 {
-                    return await Result<string>.SuccessAsync(user.Id.ToString(), message: string.Format(_localizer["User {0} Registered."], user.UserName));
+                    return await Result<string>.SuccessAsync(user.Id.ToString(),
+                        message: string.Format(_localizer["User {0} Registered."], user.UserName));
                 }
-           
-                var messages = new List<string> { string.Format(_localizer["User {0} Registered."], user.UserName) };
-                
+
+                var messages = new List<string> {string.Format(_localizer["User {0} Registered."], user.UserName)};
+
                 if (_mailSettings.EnableVerification)
                 {
                     // send verification email
@@ -119,20 +121,25 @@ namespace eLearn.Modules.Users.Core.Services
                     {
                         From = _mailSettings.From,
                         To = user.Email,
-                        Body = string.Format(_localizer["hello, customer please confirm your Biowell account by <a href='{0}'>clicking here</a>."], emailVerificationUri),
+                        Body = string.Format(
+                            _localizer[
+                                "hello, customer please confirm your Biowell account by <a href='{0}'>clicking here</a>."],
+                            emailVerificationUri),
                         Subject = _localizer["Confirm Registration"]
                     };
                     _jobService.Enqueue(() => _mailService.SendAsync(mailRequest));
-                    
+
                     System.IO.File.WriteAllText("confirmationLink.txt", emailVerificationUri);
 
                     messages.Add(_localizer["Please check your Mailbox to verify!"]);
                 }
+
                 return await Result<string>.SuccessAsync(user.Id.ToString(), messages: messages);
             }
             else
             {
-                throw new IdentityException(_localizer["Validation Errors Occurred."], result.Errors.Select(a => _localizer[a.Description].ToString()).ToList());
+                throw new IdentityException(_localizer["Validation Errors Occurred."],
+                    result.Errors.Select(a => _localizer[a.Description].ToString()).ToList());
             }
         }
 
@@ -146,17 +153,20 @@ namespace eLearn.Modules.Users.Core.Services
 
             if (await _userManager.IsLockedOutAsync(user))
             {
-                throw new IdentityException(_localizer["User Is Locked. Please try it later."], statusCode: HttpStatusCode.Forbidden); 
+                throw new IdentityException(_localizer["User Is Locked. Please try it later."],
+                    statusCode: HttpStatusCode.Forbidden);
             }
-            
+
             if (!user.IsActive)
             {
-                throw new IdentityException(_localizer["User Not Active. Please contact the administrator."], statusCode: HttpStatusCode.Unauthorized);
+                throw new IdentityException(_localizer["User Not Active. Please contact the administrator."],
+                    statusCode: HttpStatusCode.Unauthorized);
             }
-            
+
             if (_mailSettings.EnableVerification && !await _userManager.IsEmailConfirmedAsync(user))
             {
-                throw new IdentityException(_localizer["E-Mail not confirmed."], statusCode: HttpStatusCode.Unauthorized);
+                throw new IdentityException(_localizer["E-Mail not confirmed."],
+                    statusCode: HttpStatusCode.Unauthorized);
             }
 
             bool passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
@@ -167,9 +177,11 @@ namespace eLearn.Modules.Users.Core.Services
                 {
                     // email user, notifying them of lockout
                 }
-                throw new IdentityException(_localizer["Invalid Credentials."], statusCode: HttpStatusCode.Unauthorized);
+
+                throw new IdentityException(_localizer["Invalid Credentials."],
+                    statusCode: HttpStatusCode.Unauthorized);
             }
-            
+
             await _userManager.ResetAccessFailedCountAsync(user);
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
@@ -197,11 +209,16 @@ namespace eLearn.Modules.Users.Core.Services
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
             {
-                return await Result<string>.SuccessAsync(user.Id.ToString(), string.Format(_localizer["Account Confirmed for E-Mail {0}. You can now use the /api/identity/token endpoint to generate JWT."], user.Email));
+                return await Result<string>.SuccessAsync(user.Id.ToString(),
+                    string.Format(
+                        _localizer[
+                            "Account Confirmed for E-Mail {0}. You can now use the /api/identity/token endpoint to generate JWT."],
+                        user.Email));
             }
             else
             {
-                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"], user.Email));
+                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"],
+                    user.Email));
             }
         }
 
@@ -213,7 +230,7 @@ namespace eLearn.Modules.Users.Core.Services
                 // Don't reveal that the user does not exist or is not confirmed
                 throw new IdentityException(_localizer["An Error has occurred!"]);
             }
-            
+
             string code = await _userManager.GeneratePasswordResetTokenAsync(user);
             System.IO.File.WriteAllText("resetLink.txt", code);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -222,7 +239,8 @@ namespace eLearn.Modules.Users.Core.Services
             string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "Token", code);
             var mailRequest = new MailRequest
             {
-                Body = string.Format(_localizer["Please reset your password by <a href='{0}>clicking here</a>."], HtmlEncoder.Default.Encode(passwordResetUrl)),
+                Body = string.Format(_localizer["Please reset your password by <a href='{0}>clicking here</a>."],
+                    HtmlEncoder.Default.Encode(passwordResetUrl)),
                 Subject = _localizer["Reset Password"],
                 To = request.Email
             };
@@ -250,7 +268,26 @@ namespace eLearn.Modules.Users.Core.Services
                 throw new IdentityException(_localizer["An Error has occurred!"]);
             }
         }
-        
+
+        public Task<IResult> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            throw new NotImplementedException();
+            // var user = await GetCurrentUserAsync();
+            // if (user != null)
+            // {
+            //     var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            //     if (result.Succeeded)
+            //     {
+            //         await _signInManager.SignInAsync(user, isPersistent: false);
+            //         _logger.LogInformation(3, "User changed their password successfully.");
+            //         return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
+            //     }
+            //     AddErrors(result);
+            //     return View(model);
+            // }
+            // return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+        }
+
         private async Task<string> GetEmailVerificationUriAsync(AppUser user, string origin)
         {
             string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

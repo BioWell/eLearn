@@ -4,10 +4,11 @@ using eLearn.Modules.Users.Core.Dto.Identity.Tokens;
 using eLearn.Modules.Users.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Infrastructure.Wrapper;
 
 namespace eLearn.Modules.Users.Api.Controllers
 {
-    [Route(BasePath)]
+    [Route(BasePath + "/[controller]")]
     internal sealed class IdentityController : BaseController
     {
         private readonly IIdentityService _identityService;
@@ -18,6 +19,9 @@ namespace eLearn.Modules.Users.Api.Controllers
             _identityService = identityService;
             _tokenService = tokenService;
         }
+        
+        [HttpGet]
+        public ActionResult<string> Get() => Ok(Result<string>.SuccessAsync("Users module")); 
         
         [HttpPost("register")]
         [AllowAnonymous]
@@ -64,6 +68,12 @@ namespace eLearn.Modules.Users.Api.Controllers
         {
             var response = await _tokenService.RefreshTokenAsync(request, GenerateIpAddress());
             return Ok(response);
+        }
+        
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            return Ok(await _identityService.ChangePasswordAsync(request));
         }
         
         private string? GenerateIpAddress()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Shared.Infrastructure.Wrapper
@@ -76,9 +77,9 @@ namespace Shared.Infrastructure.Wrapper
 
     public class ErrorResult<T> : Result<T>
     {
-        public string Source { get; set; } = string.Empty;
+        public string Source { get; set; } = String.Empty;
 
-        public string Exception { get; set; } = string.Empty;
+        public string Exception { get; set; } = String.Empty;
 
         public int ErrorCode { get; set; }
     }

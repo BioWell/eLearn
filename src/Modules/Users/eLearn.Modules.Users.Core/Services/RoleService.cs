@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -63,11 +64,7 @@ namespace eLearn.Modules.Users.Core.Services
                         statusCode: System.Net.HttpStatusCode.BadRequest);
                 }
 
-                var newRole = new AppRole()
-                {
-                    Name = request.Name, 
-                    Description = request.Description
-                };
+                var newRole = new AppRole(request.Name, request.Description);
                 
                 var response = await _roleManager.CreateAsync(newRole);
                 // newRole.AddDomainEventdDomainEvent(new RoleAddedEvent(newRole));
@@ -99,7 +96,7 @@ namespace eLearn.Modules.Users.Core.Services
 
                 existingRole.Name = request.Name;
                 existingRole.NormalizedName = request.Name.ToUpper();
-                existingRole.Description = request.Description;
+                existingRole.Description = request.Description ?? String.Empty;
                 // existingRole.AddDomainEvent(new RoleUpdatedEvent(existingRole));
                 await _roleManager.UpdateAsync(existingRole);
                 return await Result<string>.SuccessAsync(existingRole.Id.ToString(),
@@ -146,7 +143,7 @@ namespace eLearn.Modules.Users.Core.Services
             }
         }
 
-        private static List<string> DefaultRoles()
+        private static List<string?> DefaultRoles()
         {
             return typeof(RoleConstants).GetAllPublicConstantValues<string>();
         }
