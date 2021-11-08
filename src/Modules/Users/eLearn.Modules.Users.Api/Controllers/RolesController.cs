@@ -29,7 +29,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpPost]
-        // [Authorize(Policy = Permissions.Roles.Create)]
+        [Authorize(Policy = Permissions.Roles.Create)]
         public async Task<IActionResult> PostAsync(RoleRequest request)
         {
             var response = await _roleService.SaveAsync(request);
@@ -37,7 +37,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpDelete("{id}")]
-        // [Authorize(Policy = Permissions.Roles.Delete)]
+        [Authorize(Policy = Permissions.Roles.Delete)]
         public async Task<IActionResult> DeleteAsync(string id)
         {
             var response = await _roleService.DeleteAsync(id);
@@ -45,7 +45,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpGet("permissions")]
-        // [Authorize(Policy = Permissions.RoleClaims.View)]
+        [Authorize(Policy = Permissions.RoleClaims.View)]
         public async Task<IActionResult> GetAllClaimsAsync()
         {
             var response = await _roleClaimService.GetAllAsync();
@@ -53,7 +53,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpGet("permissions/byrole/{roleId}")]
-        // [Authorize(Policy = Permissions.RoleClaims.View)]
+        [Authorize(Policy = Permissions.RoleClaims.View)]
         public async Task<IActionResult> GetPermissionsByRoleIdAsync([FromRoute] string roleId)
         {
             //Get Permissions By Role Id.
@@ -62,7 +62,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpGet("permissions/{id}")]
-        // [Authorize(Policy = Permissions.RoleClaims.View)]
+        [Authorize(Policy = Permissions.RoleClaims.View)]
         public async Task<IActionResult> GetClaimByIdAsync([FromRoute] int id)
         {
             //Get a Role Claim By Id.
@@ -71,7 +71,7 @@ namespace eLearn.Modules.Users.Api.Controllers
         }
         
         [HttpPut("permissions/update")]
-        // [Authorize(Policy = Permissions.RoleClaims.Edit)]
+        [Authorize(Policy = Permissions.RoleClaims.Edit)]
         public async Task<IActionResult> UpdatePermissionsAsync(PermissionRequest request)
         {
             //Edit a Role Claims.

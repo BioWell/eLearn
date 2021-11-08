@@ -31,7 +31,7 @@ namespace eLearn.Modules.Users.Core.Persistence
             SeedData(builder);
         }
 
-        public void ApplyIdentityConfiguration(ModelBuilder builder)
+        private void ApplyIdentityConfiguration(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
