@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using Shared.Infrastructure.Api.Contracts;
 using Shared.Infrastructure.Wrapper;
@@ -8,11 +9,11 @@ namespace Shared.Infrastructure.CQRS.Commands
     public class AddExtendedAttributeCommand<TEntityId, TEntity> : IRequest<Result<long>>
         where TEntity : class, IEntity<TEntityId>
     {
-        public TEntityId EntityId { get; set; }
+        public TEntityId EntityId { get; set; } = default!;
 
         public ExtendedAttributeType Type { get; set; }
 
-        public string Key { get; set; }
+        public string Key { get; set; } = String.Empty;
 
         public decimal? Decimal { get; set; }
 
@@ -32,6 +33,6 @@ namespace Shared.Infrastructure.CQRS.Commands
 
         public string? Description { get; set; }
 
-        public bool IsActive { get; set; } = true;        
+        public bool IsActive { get; set; } = true;
     }
 }

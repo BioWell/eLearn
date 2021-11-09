@@ -14,6 +14,7 @@ namespace Shared.Infrastructure.Api
         {
             // var extendedAttributes = await Mediator.Send(new GetExtendedAttributesQuery<TEntityId, TEntity>(filter));
             // return Ok(extendedAttributes);
+            await Task.CompletedTask;
             return Ok("extendedAttributes");
         }
     }

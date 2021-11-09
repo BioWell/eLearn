@@ -14,13 +14,13 @@ namespace Shared.Infrastructure.Serialization
             _options = options.Value.JsonSerializerOptions;
         }
 
-        public T? Deserialize<T>(string data, IJsonSerializerSettingsOptions options)
+        public T? Deserialize<T>(string data, IJsonSerializerSettingsOptions? options)
             => JsonSerializer.Deserialize<T>(data, options?.JsonSerializerOptions ?? _options);
 
-        public string Serialize<T>(T data, IJsonSerializerSettingsOptions options)
+        public string Serialize<T>(T data, IJsonSerializerSettingsOptions? options)
             => JsonSerializer.Serialize(data, options?.JsonSerializerOptions ?? _options);
 
-        public string Serialize<T>(T data, Type type, IJsonSerializerSettingsOptions options)
+        public string Serialize<T>(T data, Type type, IJsonSerializerSettingsOptions? options)
             => JsonSerializer.Serialize(data, type, options?.JsonSerializerOptions ?? _options);
     }
 }

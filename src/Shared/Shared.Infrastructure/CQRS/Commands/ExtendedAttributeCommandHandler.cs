@@ -45,14 +45,14 @@ namespace Shared.Infrastructure.CQRS.Commands
         
         public async Task<Result<long>> Handle(AddExtendedAttributeCommand<TEntityId, TEntity> request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(request.EntityId), cancellationToken);
+            var entity = await _context.Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id != null && e.Id.Equals(request.EntityId), cancellationToken);
             if (entity == null)
             {
                 throw new CustomException(string.Format(_localizer["{0} Not Found"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
             }
             
             bool isKeyUsed = await _context.ExtendedAttributes.AsNoTracking()
-                .AnyAsync(ea => ea.EntityId.Equals(request.EntityId) && ea.Key.Equals(request.Key), cancellationToken);
+                .AnyAsync(ea => ea.EntityId != null && ea.EntityId.Equals(request.EntityId) && ea.Key.Equals(request.Key), cancellationToken);
             if (isKeyUsed)
             {
                 throw new CustomException(string.Format(_localizer["This {0} Key is Already Used For This Entity"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
@@ -88,13 +88,13 @@ namespace Shared.Infrastructure.CQRS.Commands
                 throw new CustomException(string.Format(_localizer["{0} Extended Attribute Not Found!"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
             }
 
-            if (!extendedAttribute.EntityId.Equals(request.EntityId))
+            if (extendedAttribute.EntityId != null && !extendedAttribute.EntityId.Equals(request.EntityId))
             {
                 throw new CustomException(string.Format(_localizer["{0} Not Found"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
             }
 
             bool isKeyUsed = await _context.ExtendedAttributes.AsNoTracking()
-                .AnyAsync(ea => ea.Id != extendedAttribute.Id && ea.EntityId.Equals(request.EntityId) && ea.Key.Equals(request.Key), cancellationToken);
+                .AnyAsync(ea => ea.EntityId != null && ea.Id != extendedAttribute.Id && ea.EntityId.Equals(request.EntityId) && ea.Key.Equals(request.Key), cancellationToken);
             if (isKeyUsed)
             {
                 throw new CustomException(string.Format(_localizer["This {0} Key Is Already Used For This Entity"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);

@@ -14,13 +14,13 @@ namespace Shared.Infrastructure.Serialization
             _settings = settings.Value.JsonSerializerSettings;
         }
 
-        public T? Deserialize<T>(string text, IJsonSerializerSettingsOptions settings)
+        public T? Deserialize<T>(string text, IJsonSerializerSettingsOptions? settings)
             => JsonConvert.DeserializeObject<T>(text, settings?.JsonSerializerSettings ?? _settings);
 
-        public string Serialize<T>(T obj, IJsonSerializerSettingsOptions settings)
+        public string Serialize<T>(T obj, IJsonSerializerSettingsOptions? settings)
             => JsonConvert.SerializeObject(obj, settings?.JsonSerializerSettings ?? _settings);
 
-        public string Serialize<T>(T obj, Type type, IJsonSerializerSettingsOptions settings)
+        public string Serialize<T>(T obj, Type type, IJsonSerializerSettingsOptions? settings)
             => JsonConvert.SerializeObject(obj, type, settings?.JsonSerializerSettings ?? _settings);
     }
 }

@@ -6,7 +6,7 @@
 
         public int PageSize { get; set; }
 
-        public string OrderBy { get; set; }
+        public string? OrderBy { get; set; }
 
         public PaginatedFilter()
         {

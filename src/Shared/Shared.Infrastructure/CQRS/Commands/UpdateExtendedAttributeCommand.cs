@@ -10,11 +10,11 @@ namespace Shared.Infrastructure.CQRS.Commands
     {
         public long Id { get; set; }
 
-        public TEntityId EntityId { get; set; }
+        public TEntityId EntityId { get; set; } = default!;
 
         public ExtendedAttributeType Type { get; set; }
 
-        public string Key { get; set; }
+        public string Key { get; set; } = String.Empty;
 
         public decimal? Decimal { get; set; }
 

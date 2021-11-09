@@ -7,13 +7,13 @@ namespace Shared.Infrastructure.Entities
         : EntityBase, IExtendedAttribute<TEntityId>
         where TEntity : class, IEntity<TEntityId>
     {
-        public TEntityId EntityId { get; set; }
+        public TEntityId EntityId { get; set; } = default!;
 
-        public virtual TEntity Entity { get; set; }
+        public virtual TEntity Entity { get; set; } = default!;
 
         public ExtendedAttributeType Type { get; set; }
 
-        public string Key { get; set; }
+        public string Key { get; set; } = String.Empty;
 
         public decimal? Decimal { get; set; }
 

@@ -18,7 +18,7 @@ namespace Shared.Infrastructure.Caching
         
     }
 
-    public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse?>
         where TRequest : ICacheable
     {
         private readonly IDistributedCache _cache;
@@ -36,7 +36,7 @@ namespace Shared.Infrastructure.Caching
             _settings = settings.Value;
         }
         
-        public async Task<TResponse?> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse?> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse?> next)
         {
             TResponse? response;
             if (request.BypassCache)
@@ -44,7 +44,7 @@ namespace Shared.Infrastructure.Caching
                 _logger.LogInformation(string.Format(_localizer["Bypassing Cache for -> '{0}'."], request.CacheKey));
                 return await next();
             }
-            
+
             async Task<TResponse?> GetResponseAndAddToCache()
             {
                 response = await next();
@@ -55,23 +55,23 @@ namespace Shared.Infrastructure.Caching
                 }
 
                 var options = new DistributedCacheEntryOptions { SlidingExpiration = slidingExpiration };
-                byte[] serializedData = Encoding.Default.GetBytes(_jsonSerializer.Serialize(response));
+                byte[] serializedData = Encoding.Default.GetBytes(_jsonSerializer.Serialize(response, null));
                 await _cache.SetAsync(request.CacheKey, serializedData, options, cancellationToken);
                 return response;
             }
-            
+
             byte[]? cachedResponse = !string.IsNullOrWhiteSpace(request.CacheKey) ? await _cache.GetAsync(request.CacheKey, cancellationToken) : null;
             if (cachedResponse != null)
             {
-                response = _jsonSerializer.Deserialize<TResponse>(Encoding.Default.GetString(cachedResponse));
-                _logger.LogInformation(string.Format(_localizer[$"Fetched from Cache -> '{0}'."], request.CacheKey));
+                response = _jsonSerializer.Deserialize<TResponse>(Encoding.Default.GetString(cachedResponse), null);
+                _logger.LogInformation(string.Format(_localizer["Fetched from Cache -> '{0}'."], request.CacheKey));
             }
             else
             {
                 response = await GetResponseAndAddToCache();
                 _logger.LogInformation(string.Format(_localizer["Added to Cache -> '{0}'."], request.CacheKey));
             }
-            
+
             return response;
         }
     }
