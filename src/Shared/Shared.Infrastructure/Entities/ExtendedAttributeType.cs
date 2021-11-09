@@ -1,4 +1,4 @@
-﻿namespace Shared.Infrastructure.Api.Contracts
+﻿namespace Shared.Infrastructure.Entities
 {
     public enum ExtendedAttributeType : byte
     {

@@ -3,7 +3,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class StateOrProvince : EntityBase
+    internal class StateOrProvince : BaseEntity
     {
         public StateOrProvince()
         {

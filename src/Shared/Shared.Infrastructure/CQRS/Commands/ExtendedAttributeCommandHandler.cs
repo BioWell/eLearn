@@ -1,12 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
-using Shared.Infrastructure.Api.Contracts;
+using Shared.Infrastructure.Caching;
 using Shared.Infrastructure.Entities;
 using Shared.Infrastructure.Exceptions;
 using Shared.Infrastructure.Utilities;
@@ -26,7 +28,7 @@ namespace Shared.Infrastructure.CQRS.Commands
         where TEntity : class, IEntity<TEntityId>
         where TExtendedAttribute : ExtendedAttribute<TEntityId, TEntity>
     {
-        // private readonly IDistributedCache _cache;
+        private readonly IDistributedCache _cache;
         private readonly IExtendedAttributeDbContext<TEntityId, TEntity, TExtendedAttribute> _context;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<ExtendedAttributeCommandHandler> _localizer;
@@ -35,12 +37,13 @@ namespace Shared.Infrastructure.CQRS.Commands
         public ExtendedAttributeCommandHandler(
             IExtendedAttributeDbContext<TEntityId, TEntity, TExtendedAttribute> context,
             IMapper mapper,
-            IStringLocalizer<ExtendedAttributeCommandHandler> localizer)
+            IStringLocalizer<ExtendedAttributeCommandHandler> localizer,
+            IDistributedCache cache)
         {
             _context = context;
             _mapper = mapper;
             _localizer = localizer;
-            // _cache = cache;
+            _cache = cache;
         }
         
         public async Task<Result<long>> Handle(AddExtendedAttributeCommand<TEntityId, TEntity> request, CancellationToken cancellationToken)
@@ -76,7 +79,7 @@ namespace Shared.Infrastructure.CQRS.Commands
             _context.ExtendedAttributes.Remove(extendedAttribute);
             // extendedAttribute.AddDomainEvent(new ExtendedAttributeRemovedEvent<TEntity>(request.Id));
             // await _context.SaveChangesAsync(cancellationToken);
-            // await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, ExtendedAttribute<TEntityId, TEntity>>(request.Id), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, ExtendedAttribute<TEntityId, TEntity>>(request.Id), cancellationToken);
             return await Result<long>.SuccessAsync(extendedAttribute.Id, string.Format(_localizer["{0} Extended Attribute Deleted"], typeof(TEntity).GetGenericTypeName()));
         }
 
@@ -104,7 +107,7 @@ namespace Shared.Infrastructure.CQRS.Commands
             // extendedAttribute.AddDomainEvent(new ExtendedAttributeUpdatedEvent<TEntityId, TEntity>(extendedAttribute));
             _context.ExtendedAttributes.Update(extendedAttribute);
             // await _context.SaveChangesAsync(cancellationToken);
-            // await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, ExtendedAttribute<TEntityId, TEntity>>(request.Id), cancellationToken);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, ExtendedAttribute<TEntityId, TEntity>>(request.Id), cancellationToken);
             return await Result<long>.SuccessAsync(extendedAttribute.Id, string.Format(_localizer["{0} Extended Attribute Updated"], typeof(TEntity).GetGenericTypeName()));
 
         }

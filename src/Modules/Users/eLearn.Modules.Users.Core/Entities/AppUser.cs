@@ -5,7 +5,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class AppUser : IdentityUser<long>, IEntityWithTypedId<long>, IExtendableObject
+    internal class AppUser : IdentityUser<long>, IEntity<long>, IExtendableObject
     {
         public AppUser()
         {

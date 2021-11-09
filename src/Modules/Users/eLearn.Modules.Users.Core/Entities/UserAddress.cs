@@ -3,7 +3,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class UserAddress : EntityBase
+    internal class UserAddress : BaseEntity
     {
         public AddressType AddressType { get; set; }
         public DateTimeOffset? LastUsedOn { get; set; }

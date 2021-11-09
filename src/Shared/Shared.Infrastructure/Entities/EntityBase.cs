@@ -1,6 +1,6 @@
 ﻿namespace Shared.Infrastructure.Entities
 {
-    public abstract class EntityBase : EntityBaseWithTypedId<long>
+    public abstract class BaseEntity : EntityBaseWithTypedId<long>
     {
     }
 }

@@ -40,6 +40,7 @@
     <ItemGroup>
       <Compile Remove="Wrapper\PaginatedResult.cs" />
       <None Include="Wrapper\PaginatedResult.cs" />
+      <Compile Remove="Api\Contracts\IEntity.cs" />
     </ItemGroup>
 
     <ItemGroup>

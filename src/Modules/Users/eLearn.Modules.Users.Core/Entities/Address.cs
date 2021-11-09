@@ -3,7 +3,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class Address : EntityBase
+    internal class Address : BaseEntity
     {
         public Address()
         {

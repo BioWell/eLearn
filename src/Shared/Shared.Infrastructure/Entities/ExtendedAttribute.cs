@@ -1,10 +1,9 @@
 ﻿using System;
-using Shared.Infrastructure.Api.Contracts;
 
 namespace Shared.Infrastructure.Entities
 {
     public abstract class ExtendedAttribute<TEntityId, TEntity>
-        : EntityBase, IExtendedAttribute<TEntityId>
+        : BaseEntity, IExtendedAttribute<TEntityId>
         where TEntity : class, IEntity<TEntityId>
     {
         public TEntityId EntityId { get; set; } = default!;

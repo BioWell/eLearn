@@ -1,6 +1,5 @@
-﻿using System;
-using MediatR;
-using Shared.Infrastructure.Api.Contracts;
+﻿using MediatR;
+using Shared.Infrastructure.Entities;
 using Shared.Infrastructure.Wrapper;
 
 namespace Shared.Infrastructure.CQRS.Commands

@@ -1,5 +1,4 @@
 ﻿using System;
-using Shared.Infrastructure.Api.Contracts;
 
 namespace Shared.Infrastructure.Entities
 {

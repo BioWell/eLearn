@@ -2,7 +2,7 @@
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class District : EntityBase
+    internal class District : BaseEntity
     {
         public District()
         {

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Infrastructure.Api.Contracts;
 using Shared.Infrastructure.Api.Filters;
+using Shared.Infrastructure.Entities;
 
 namespace Shared.Infrastructure.Api
 {

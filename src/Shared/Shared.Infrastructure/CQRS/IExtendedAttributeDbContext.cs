@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructure.Api.Contracts;
 using Shared.Infrastructure.Entities;
 
 namespace Shared.Infrastructure.CQRS

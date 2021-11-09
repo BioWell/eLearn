@@ -5,7 +5,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class AppRole : IdentityRole<long>, IEntityWithTypedId<long>
+    internal class AppRole : IdentityRole<long>, IEntity<long>
     {
         public string Description { get; set; } = String.Empty;
         public virtual IList<AppUserRole>? UserRoles { get; set; }

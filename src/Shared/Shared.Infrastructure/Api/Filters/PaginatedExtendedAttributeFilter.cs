@@ -1,4 +1,4 @@
-﻿using Shared.Infrastructure.Api.Contracts;
+﻿using Shared.Infrastructure.Entities;
 
 namespace Shared.Infrastructure.Api.Filters
 {

@@ -3,7 +3,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Courses.Core.Entities
 {
-    internal class Category : EntityBase
+    internal class Category : BaseEntity
     {
         public string Name { get; set; } = String.Empty;
 
