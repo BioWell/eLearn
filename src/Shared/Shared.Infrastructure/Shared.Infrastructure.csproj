@@ -31,6 +31,7 @@
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.3" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.2.3" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.2.3" />
+      <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.13" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,14 +39,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Wrapper\PaginatedResult.cs" />
-      <None Include="Wrapper\PaginatedResult.cs" />
       <Compile Remove="Api\Contracts\IEntity.cs" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="CQRS\Events" />
-      <Folder Include="CQRS\Queries" />
     </ItemGroup>
     
 </Project>
