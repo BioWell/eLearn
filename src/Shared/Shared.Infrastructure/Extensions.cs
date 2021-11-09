@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Shared.Infrastructure.Api;
 using Shared.Infrastructure.Auth;
+using Shared.Infrastructure.Caching;
 using Shared.Infrastructure.Cors;
 using Shared.Infrastructure.Exceptions;
 using Shared.Infrastructure.Hangfire;
@@ -109,8 +110,9 @@ namespace Shared.Infrastructure
 
         private static IServiceCollection AddSharedApplication(this IServiceCollection services)
         {
-            // services.Configure<CacheSettings>(config.GetSection(nameof(CacheSettings)));
-            // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
+            var cachOptions = services.GetOptions<CacheSettings>(nameof(CacheSettings));
+            services.AddSingleton(cachOptions);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             return services;
         }

@@ -41,5 +41,10 @@
       <Compile Remove="Wrapper\PaginatedResult.cs" />
       <None Include="Wrapper\PaginatedResult.cs" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CQRS\Events" />
+      <Folder Include="CQRS\Queries" />
+    </ItemGroup>
     
 </Project>
