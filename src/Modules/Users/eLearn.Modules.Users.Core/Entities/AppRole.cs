@@ -5,7 +5,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class AppRole : IdentityRole<long>, IEntity<long>
+    internal class AppRole : IdentityRole<long>, IEntity<long> ,IEntityBase
     {
         public string Description { get; set; } = String.Empty;
         public virtual IList<AppUserRole>? UserRoles { get; set; }
@@ -20,6 +20,26 @@ namespace eLearn.Modules.Users.Core.Entities
             : base(roleName)
         {
             Description = roleDescription?? String.Empty;
+        }
+        
+        private List<Event> _domainEvents;
+
+        public IReadOnlyCollection<Event> DomainEvents => _domainEvents?.AsReadOnly();
+
+        public void AddDomainEvent(Event domainEvent)
+        {
+            _domainEvents ??= new List<Event>();
+            _domainEvents.Add(domainEvent);
+        }
+
+        public void RemoveDomainEvent(Event domainEvent)
+        {
+            _domainEvents?.Remove(domainEvent);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents?.Clear();
         }
     }
 }

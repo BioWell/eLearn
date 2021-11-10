@@ -5,7 +5,7 @@ using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Entities
 {
-    internal class AppUser : IdentityUser<long>, IEntity<long>, IExtendableObject
+    internal class AppUser : IdentityUser<long>, IEntity<long>, IExtendableObject, IEntityBase
     {
         public AppUser()
         {
@@ -28,8 +28,28 @@ namespace eLearn.Modules.Users.Core.Entities
 
         public virtual IList<AppUserRole>? UserRoles { get; set; }
         public virtual IList<UserAddress>? Addresses { get; set; }
-        
-        
+
+
+        private List<Event> _domainEvents;
+
+        public IReadOnlyCollection<Event> DomainEvents => _domainEvents?.AsReadOnly();
+
+        public void AddDomainEvent(Event domainEvent)
+        {
+            _domainEvents ??= new List<Event>();
+            _domainEvents.Add(domainEvent);
+        }
+
+        public void RemoveDomainEvent(Event domainEvent)
+        {
+            _domainEvents?.Remove(domainEvent);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents?.Clear();
+        }
+
         // public long? DefaultShippingAddressId { get; set; }
         // public virtual UserAddress? DefaultShippingAddress { get; set; }
         // public long? DefaultBillingAddressId { get; set; }

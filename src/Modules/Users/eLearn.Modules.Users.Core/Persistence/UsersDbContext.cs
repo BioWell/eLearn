@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using eLearn.Modules.Users.Core.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Utilities;
 using Shared.Infrastructure.Auth;
+using Shared.Infrastructure.Entities;
 
 namespace eLearn.Modules.Users.Core.Persistence
 {
@@ -26,6 +26,7 @@ namespace eLearn.Modules.Users.Core.Persistence
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.HasDefaultSchema(Schema);
+            builder.Ignore<Event>();
             base.OnModelCreating(builder);
             ApplyIdentityConfiguration(builder);
             SeedData(builder);
